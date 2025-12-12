@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Catz</string>
+    <string name="nav_list">List</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="list_screen_title">List Screen</string>
+    <string name="favorites_screen_title">Favorites Screen</string>
 </resources>
