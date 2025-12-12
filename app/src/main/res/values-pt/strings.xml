@@ -12,10 +12,10 @@
     <string name="screen_favorites_title">Ecra de Favoritos</string>
 
     <!-- Breed Component -->
-    <string name="breed_empty_message">Nenhuma raca disponivel</string>
+    <string name="breed_empty_message">Nenhuma raça disponivel</string>
 
     <!-- Accessibility -->
-    <string name="a11y_breed_image_description">Imagem da raca de gato %1$s</string>
+    <string name="a11y_breed_image_description">Imagem da raça de gato %1$s</string>
     <string name="a11y_breed_favorite_add">Adicionar %1$s aos favoritos</string>
     <string name="a11y_breed_favorite_remove">Remover %1$s dos favoritos</string>
 </resources>

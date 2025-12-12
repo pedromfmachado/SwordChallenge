@@ -20,6 +20,7 @@ import com.pedromfmachado.sword.domain.model.Breed
 @Composable
 fun BreedList(
     breeds: List<Breed>,
+    onBreedClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
@@ -45,6 +46,7 @@ fun BreedList(
             ) { breed ->
                 BreedListItem(
                     breed = breed,
+                    onClick = onBreedClick,
                     onFavoriteClick = onFavoriteClick
                 )
             }
@@ -57,6 +59,7 @@ fun BreedList(
 private fun BreedListPreview() {
     BreedList(
         breeds = MockBreedData.breeds.take(3),
+        onBreedClick = {},
         onFavoriteClick = {}
     )
 }
@@ -66,6 +69,7 @@ private fun BreedListPreview() {
 private fun BreedListEmptyPreview() {
     BreedList(
         breeds = emptyList(),
+        onBreedClick = {},
         onFavoriteClick = {}
     )
 }

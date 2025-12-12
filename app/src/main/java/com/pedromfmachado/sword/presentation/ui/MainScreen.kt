@@ -82,6 +82,7 @@ fun MainScreen() {
 fun ListScreen(modifier: Modifier = Modifier) {
     BreedList(
         breeds = MockBreedData.breeds,
+        onBreedClick = { /* No action for now */ },
         onFavoriteClick = { /* No action for now */ },
         modifier = modifier
     )
@@ -91,6 +92,7 @@ fun ListScreen(modifier: Modifier = Modifier) {
 fun FavoritesScreen(modifier: Modifier = Modifier) {
     BreedList(
         breeds = MockBreedData.favoriteBreeds,
+        onBreedClick = { /* No action for now */ },
         onFavoriteClick = { /* No action for now */ },
         modifier = modifier
     )

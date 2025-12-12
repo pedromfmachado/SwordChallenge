@@ -37,6 +37,7 @@ private val FavoriteInactiveColor = Color(0xFF757575)
 @Composable
 fun BreedListItem(
     breed: Breed,
+    onClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -47,6 +48,7 @@ fun BreedListItem(
     }
 
     Card(
+        onClick = { onClick(breed) },
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -108,6 +110,7 @@ private fun BreedListItemPreview() {
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
             isFavorite = false
         ),
+        onClick = {},
         onFavoriteClick = {}
     )
 }
@@ -122,6 +125,7 @@ private fun BreedListItemFavoritePreview() {
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
             isFavorite = true
         ),
+        onClick = {},
         onFavoriteClick = {}
     )
 }
