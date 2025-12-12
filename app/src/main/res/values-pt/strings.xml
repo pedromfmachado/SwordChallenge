@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
     <string name="app_name">Os Gatos</string>
-    <string name="nav_list">Lista</string>
-    <string name="nav_favorites">Favoritos</string>
-    <string name="list_screen_title">Ecrã de Lista</string>
-    <string name="favorites_screen_title">Ecrã de Favoritos</string>
+
+    <!-- Navigation -->
+    <string name="nav_list_label">Lista</string>
+    <string name="nav_favorites_label">Favoritos</string>
+
+    <!-- Screens -->
+    <string name="screen_list_title">Ecra de Lista</string>
+    <string name="screen_favorites_title">Ecra de Favoritos</string>
+
+    <!-- Breed Component -->
+    <string name="breed_empty_message">Nenhuma raça disponivel</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_breed_image_description">Imagem da raça de gato %1$s</string>
+    <string name="a11y_breed_favorite_add">Adicionar %1$s aos favoritos</string>
+    <string name="a11y_breed_favorite_remove">Remover %1$s dos favoritos</string>
 </resources>

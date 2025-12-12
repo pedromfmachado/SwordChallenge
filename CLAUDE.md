@@ -43,6 +43,18 @@ Clean Architecture with:
 - **Localization**: English (default), Portuguese (`values-pt/`)
 - **Version Catalog**: `gradle/libs.versions.toml`
 
+### String Resources
+
+Pattern: `{feature}_{element}_{purpose}` (snake_case)
+
+| Prefix | Usage |
+|--------|-------|
+| `app_` | Global app-level |
+| `nav_` | Navigation elements |
+| `screen_{name}_` | Screen-specific content |
+| `{component}_` | Component content (e.g., `breed_`) |
+| `a11y_{feature}_` | Accessibility descriptions |
+
 ## Key Files
 
 - `app/build.gradle.kts` - App config

@@ -1,8 +1,6 @@
 package com.pedromfmachado.sword.presentation.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -19,12 +17,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.pedromfmachado.sword.R
+import com.pedromfmachado.sword.data.mock.MockBreedData
+import com.pedromfmachado.sword.presentation.ui.components.breed.BreedList
 
 sealed class BottomNavItem(
     @StringRes val titleResId: Int,
@@ -32,13 +31,13 @@ sealed class BottomNavItem(
     val unselectedIcon: ImageVector
 ) {
     data object List : BottomNavItem(
-        titleResId = R.string.nav_list,
+        titleResId = R.string.nav_list_label,
         selectedIcon = Icons.AutoMirrored.Filled.List,
         unselectedIcon = Icons.AutoMirrored.Outlined.List
     )
 
     data object Favorites : BottomNavItem(
-        titleResId = R.string.nav_favorites,
+        titleResId = R.string.nav_favorites_label,
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder
     )
@@ -81,22 +80,22 @@ fun MainScreen() {
 
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = stringResource(R.string.list_screen_title))
-    }
+    BreedList(
+        breeds = MockBreedData.breeds,
+        onBreedClick = { /* No action for now */ },
+        onFavoriteClick = { /* No action for now */ },
+        modifier = modifier
+    )
 }
 
 @Composable
 fun FavoritesScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = stringResource(R.string.favorites_screen_title))
-    }
+    BreedList(
+        breeds = MockBreedData.favoriteBreeds,
+        onBreedClick = { /* No action for now */ },
+        onFavoriteClick = { /* No action for now */ },
+        modifier = modifier
+    )
 }
 
 @Preview(showBackground = true)
