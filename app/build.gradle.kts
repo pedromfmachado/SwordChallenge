@@ -59,4 +59,8 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // Coil (Image Loading)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }
