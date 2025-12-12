@@ -24,11 +24,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.pedromfmachado.sword.R
 import com.pedromfmachado.sword.domain.model.Breed
+
+private val FavoriteActiveColor = Color(0xFFE91E63)
+private val FavoriteInactiveColor = Color(0xFF757575)
 
 @Composable
 fun BreedListItem(
@@ -84,9 +88,9 @@ fun BreedListItem(
                     },
                     contentDescription = null,
                     tint = if (breed.isFavorite) {
-                        MaterialTheme.colorScheme.error
+                        FavoriteActiveColor
                     } else {
-                        MaterialTheme.colorScheme.onSurface
+                        FavoriteInactiveColor
                     }
                 )
             }
