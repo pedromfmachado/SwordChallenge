@@ -10,7 +10,7 @@ data class BreedDto(
     val origin: String,
     val temperament: String,
     val description: String,
-    @Json(name = "life_span") val lifeSpan: String,
+    @param:Json(name = "life_span") val lifeSpan: String,
     val image: ImageDto?
 )
 
