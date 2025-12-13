@@ -6,18 +6,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.pedromfmachado.sword.catz.catbreeds.R
 
 @Composable
 fun ErrorContent(
-    message: String,
+    message: String? = null,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = message)
+        Text(text = message ?: stringResource(R.string.error_generic))
     }
 }
 
@@ -25,4 +27,10 @@ fun ErrorContent(
 @Composable
 private fun ErrorContentPreview() {
     ErrorContent(message = "Something went wrong")
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ErrorContentDefaultPreview() {
+    ErrorContent()
 }

@@ -41,12 +41,7 @@ fun FavoritesScreen(
                 modifier = modifier
             )
         }
-        is BreedFavoritesUiState.Error -> {
-            ErrorContent(
-                message = state.message ?: stringResource(R.string.screen_favorites_error_generic),
-                modifier = modifier
-            )
-        }
+        is BreedFavoritesUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
     }
 }
 

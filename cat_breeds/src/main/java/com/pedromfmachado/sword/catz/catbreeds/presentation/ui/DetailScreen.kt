@@ -64,12 +64,7 @@ fun DetailScreen(
                 modifier = modifier
             )
         }
-        is BreedDetailUiState.Error -> {
-            ErrorContent(
-                message = state.message ?: stringResource(R.string.screen_detail_error_generic),
-                modifier = modifier
-            )
-        }
+        is BreedDetailUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
     }
 }
 

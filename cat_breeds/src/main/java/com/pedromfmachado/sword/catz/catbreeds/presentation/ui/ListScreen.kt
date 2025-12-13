@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
@@ -32,11 +30,6 @@ fun ListScreen(
                 modifier = modifier
             )
         }
-        is BreedListUiState.Error -> {
-            ErrorContent(
-                message = state.message ?: stringResource(R.string.screen_list_error_generic),
-                modifier = modifier
-            )
-        }
+        is BreedListUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
     }
 }
