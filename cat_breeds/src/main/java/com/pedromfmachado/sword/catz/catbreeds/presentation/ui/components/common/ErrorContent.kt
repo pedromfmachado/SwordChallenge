@@ -26,7 +26,7 @@ fun ErrorContent(
 @Preview(showBackground = true)
 @Composable
 internal fun ErrorContentPreview() {
-    ErrorContent(message = "Something went wrong")
+    ErrorContent(message = "Something weird happened")
 }
 
 @Preview(showBackground = true)
