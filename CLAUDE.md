@@ -74,8 +74,10 @@ MainScreen (RootNavHost)
 ./gradlew assembleDebug
 
 # Run tests
-./gradlew test              # Unit tests
-./gradlew connectedCheck    # Instrumentation tests
+./gradlew test                                    # Unit tests
+./gradlew connectedCheck                          # Instrumentation tests
+./gradlew :cat_breeds:validateDebugScreenshotTest # Screenshot tests
+./gradlew :cat_breeds:updateDebugScreenshotTest   # Update screenshot references
 
 # Lint
 ./gradlew lint
@@ -85,6 +87,9 @@ MainScreen (RootNavHost)
 
 - **Unit**: JUnit 4, Mockito, TestParameterInjector, Coroutines Test
 - **UI**: Espresso, Compose UI Test
+- **Screenshot**: Compose Preview Screenshot Testing (experimental)
+  - Test location: `cat_breeds/src/screenshotTest/`
+  - Reference images: `cat_breeds/src/screenshotTestDebug/reference/`
 
 ## Conventions
 

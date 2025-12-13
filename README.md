@@ -39,5 +39,15 @@ Multi-module Clean Architecture with feature modules.
 ## Testing
 
 ```bash
+# Unit tests
 ./gradlew test
+
+# Screenshot tests
+./gradlew :cat_breeds:validateDebugScreenshotTest
 ```
+
+## CI
+
+GitHub Actions workflows run on pull requests:
+- **Unit Tests** - Runs all unit tests
+- **Screenshot Tests** - Validates Compose preview screenshots

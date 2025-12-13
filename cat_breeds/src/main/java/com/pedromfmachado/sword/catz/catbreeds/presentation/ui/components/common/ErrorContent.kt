@@ -25,12 +25,12 @@ fun ErrorContent(
 
 @Preview(showBackground = true)
 @Composable
-private fun ErrorContentPreview() {
+internal fun ErrorContentPreview() {
     ErrorContent(message = "Something went wrong")
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ErrorContentDefaultPreview() {
+internal fun ErrorContentDefaultPreview() {
     ErrorContent()
 }
