@@ -16,13 +16,23 @@ Android app for browsing and favoriting cats.
 Multi-module Clean Architecture:
 - `app/` - Main application module (navigation shell, entry points)
   - `core/` - Application, MainActivity
-  - `presentation/ui/` - MainScreen with NavHost and bottom navigation
+  - `presentation/ui/` - MainScreen (root NavHost), TabsScreen (nested NavHost with bottom nav)
 - `cat_breeds/` - Feature module for cat breed screens
   - `domain/model/` - Breed data class (id, name, imageUrl, origin, temperament, description, isFavorite)
   - `data/mock/` - MockBreedData with sample breeds
   - `presentation/navigation/` - CatBreedsRoutes (List, Favorites, Detail)
   - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
   - `presentation/ui/components/` - Reusable UI components (BreedList, BreedListItem)
+
+### Navigation Structure (Nested NavHosts)
+```
+MainScreen (RootNavHost)
+├── "tabs" -> TabsScreen (Scaffold + bottom bar)
+│   └── TabsNavHost
+│       ├── breeds_list -> ListScreen
+│       └── breeds_favorites -> FavoritesScreen
+└── breeds_detail/{breedId} -> DetailScreen (full screen)
+```
 
 ## Commands
 
@@ -68,7 +78,8 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds/build.gradle.kts` - Feature module config
 - `gradle/libs.versions.toml` - Dependencies
 - `app/src/main/java/com/pedromfmachado/sword/catz/core/` - Entry points
-- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/MainScreen.kt` - NavHost with Compose Navigation
+- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/MainScreen.kt` - Root NavHost (tabs + detail routes)
+- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/TabsScreen.kt` - Nested NavHost with bottom navigation
 - `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/domain/model/Breed.kt` - Breed model
 - `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
 - `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/presentation/ui/` - Feature screens (List, Favorites, Detail)
