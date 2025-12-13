@@ -4,6 +4,8 @@
     <string name="favorites_screen_title">Favorites Screen</string>
     <string name="favorites_average_lifespan">Average lifespan: %1$d years</string>
     <string name="screen_list_error_generic">Failed to load breeds</string>
+    <string name="screen_detail_error_generic">Failed to load breed details</string>
+    <string name="screen_favorites_error_generic">Failed to load favorites</string>
 
     <!-- Breed Component -->
     <string name="breed_empty_message">No breeds available</string>
