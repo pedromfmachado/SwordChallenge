@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,6 +14,10 @@ android {
         version = release(36)
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.pedromfmachado.sword"
         minSdk = 30
@@ -19,7 +25,14 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Load API key from local.properties
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+        }
+        val catApiKey = localProperties.getProperty("CAT_API_KEY") ?: ""
+        buildConfigField("String", "CAT_API_KEY", "\"$catApiKey\"")
     }
 
     compileOptions {
@@ -71,4 +84,11 @@ dependencies {
     // Coil (Image Loading)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // Moshi
+    implementation(libs.moshi)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
 }

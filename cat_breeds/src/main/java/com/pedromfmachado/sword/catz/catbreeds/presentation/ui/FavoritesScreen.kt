@@ -7,16 +7,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
-import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.LoadingContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesUiState
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
 
 @Composable
 fun FavoritesScreen(
@@ -24,12 +29,20 @@ fun FavoritesScreen(
     modifier: Modifier = Modifier,
     viewModel: BreedFavoritesViewModel = hiltViewModel()
 ) {
-    FavoritesScreenContent(
-        favoriteBreeds = viewModel.favoriteBreeds,
-        averageLifespan = viewModel.averageLifespan,
-        onBreedClick = onBreedClick,
-        modifier = modifier
-    )
+    val uiState by viewModel.uiState.collectAsState()
+
+    when (val state = uiState) {
+        is BreedFavoritesUiState.Loading -> LoadingContent(modifier = modifier)
+        is BreedFavoritesUiState.Success -> {
+            FavoritesScreenContent(
+                favoriteBreeds = state.breeds,
+                averageLifespan = state.averageLifespan,
+                onBreedClick = onBreedClick,
+                modifier = modifier
+            )
+        }
+        is BreedFavoritesUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
+    }
 }
 
 @Composable

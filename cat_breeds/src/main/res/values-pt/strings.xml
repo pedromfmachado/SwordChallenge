@@ -4,6 +4,9 @@
     <string name="list_screen_title">Ecrã de Lista</string>
     <string name="favorites_screen_title">Ecrã de Favoritos</string>
     <string name="favorites_average_lifespan">Esperança média de vida: %1$d anos</string>
+    <string name="screen_list_error_generic">Falha ao carregar raças</string>
+    <string name="screen_detail_error_generic">Falha ao carregar detalhes da raça</string>
+    <string name="screen_favorites_error_generic">Falha ao carregar favoritos</string>
 
     <!-- Breed Component -->
     <string name="breed_empty_message">Nenhuma raça disponível</string>

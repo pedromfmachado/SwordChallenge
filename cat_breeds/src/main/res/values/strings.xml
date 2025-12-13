@@ -3,6 +3,7 @@
     <string name="list_screen_title">List Screen</string>
     <string name="favorites_screen_title">Favorites Screen</string>
     <string name="favorites_average_lifespan">Average lifespan: %1$d years</string>
+    <string name="error_generic">Something went wrong</string>
 
     <!-- Breed Component -->
     <string name="breed_empty_message">No breeds available</string>

@@ -1,10 +1,15 @@
 package com.pedromfmachado.sword.catz.catbreeds.presentation.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.LoadingContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedListUiState
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedListViewModel
 
 @Composable
@@ -13,10 +18,18 @@ fun ListScreen(
     modifier: Modifier = Modifier,
     viewModel: BreedListViewModel = hiltViewModel()
 ) {
-    BreedList(
-        breeds = viewModel.breeds,
-        onBreedClick = onBreedClick,
-        onFavoriteClick = { /* No action for now */ },
-        modifier = modifier
-    )
+    val uiState by viewModel.uiState.collectAsState()
+
+    when (val state = uiState) {
+        is BreedListUiState.Loading -> LoadingContent(modifier = modifier)
+        is BreedListUiState.Success -> {
+            BreedList(
+                breeds = state.breeds,
+                onBreedClick = onBreedClick,
+                onFavoriteClick = { /* No action for now */ },
+                modifier = modifier
+            )
+        }
+        is BreedListUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
+    }
 }

@@ -22,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,14 +31,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import androidx.compose.ui.tooling.preview.Preview
 import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedDetailViewModel
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedDetailUiState
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedDetailViewModel
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.LoadingContent
 
 private val FavoriteActiveColor = Color(0xFFE91E63)
 private val FavoriteInactiveColor = Color(0xFF757575)
@@ -47,19 +52,20 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     viewModel: BreedDetailViewModel = hiltViewModel()
 ) {
-    val breed = viewModel.breed
+    val uiState by viewModel.uiState.collectAsState()
 
-    if (breed == null) {
-        Text(text = "Breed not found")
-        return
+    when (val state = uiState) {
+        is BreedDetailUiState.Loading -> LoadingContent(modifier = modifier)
+        is BreedDetailUiState.Success -> {
+            DetailScreenContent(
+                breed = state.breed,
+                onBackClick = onBackClick,
+                onFavoriteClick = { /* No action for now */ },
+                modifier = modifier
+            )
+        }
+        is BreedDetailUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
     }
-
-    DetailScreenContent(
-        breed = breed,
-        onBackClick = onBackClick,
-        onFavoriteClick = { /* No action for now */ },
-        modifier = modifier
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
