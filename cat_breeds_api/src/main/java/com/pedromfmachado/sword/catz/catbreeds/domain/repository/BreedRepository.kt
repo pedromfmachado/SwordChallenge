@@ -1,9 +1,10 @@
 package com.pedromfmachado.sword.catz.catbreeds.domain.repository
 
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
 
 interface BreedRepository {
-    fun getBreeds(): List<Breed>
-    fun getFavoriteBreeds(): List<Breed>
-    fun getBreedById(id: String): Breed?
+    suspend fun getBreeds(): Result<List<Breed>>
+    suspend fun getFavoriteBreeds(): Result<List<Breed>>
+    suspend fun getBreedById(id: String): Result<Breed>
 }
