@@ -2,11 +2,9 @@ package com.pedromfmachado.sword.catz.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.pedromfmachado.sword.catz.catbreeds.presentation.navigation.CatBreedsRoute
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.DetailScreen
 
@@ -30,12 +28,9 @@ fun MainScreen() {
 
         composable(
             route = CatBreedsRoute.Detail.route,
-            arguments = listOf(navArgument("breedId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            // TODO navigate to error screen when no id is defined
-            val breedId = backStackEntry.arguments?.getString("breedId") ?: return@composable
+            arguments = CatBreedsRoute.Detail.arguments
+        ) {
             DetailScreen(
-                breedId = breedId,
                 onBackClick = { rootNavController.popBackStack() }
             )
         }

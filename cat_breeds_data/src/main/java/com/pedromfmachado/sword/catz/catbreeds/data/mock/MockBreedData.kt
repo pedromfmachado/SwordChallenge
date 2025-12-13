@@ -2,7 +2,7 @@ package com.pedromfmachado.sword.catz.catbreeds.data.mock
 
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
-object MockBreedData {
+internal object MockBreedData {
     val breeds = listOf(
         Breed(
             id = "1",
@@ -93,9 +93,4 @@ object MockBreedData {
             isFavorite = false
         )
     )
-
-    val favoriteBreeds: List<Breed>
-        get() = breeds.filter { it.isFavorite }
-
-    fun findBreedById(id: String): Breed? = breeds.find { it.id == id }
 }

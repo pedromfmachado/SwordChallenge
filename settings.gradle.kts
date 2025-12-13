@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 rootProject.name = "Sword Challenge"
 include(":app")
 include(":cat_breeds")
+include(":cat_breeds_api")
+include(":cat_breeds_data")
