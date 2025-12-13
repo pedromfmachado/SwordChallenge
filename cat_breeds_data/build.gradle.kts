@@ -13,19 +13,6 @@ android {
 
     defaultConfig {
         minSdk = 30
-
-        // Load API key from local.properties
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            localProperties.load(localPropertiesFile.inputStream())
-        }
-        val catApiKey = localProperties.getProperty("CAT_API_KEY") ?: ""
-        buildConfigField("String", "CAT_API_KEY", "\"$catApiKey\"")
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     compileOptions {
@@ -46,11 +33,9 @@ dependencies {
 
     // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
 
     // Moshi
     implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
     ksp(libs.moshi.codegen)
 
     // Testing

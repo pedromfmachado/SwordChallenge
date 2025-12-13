@@ -1,7 +1,6 @@
-package com.pedromfmachado.sword.catz.catbreeds.data.di
+package com.pedromfmachado.sword.catz.di
 
-import com.pedromfmachado.sword.catz.catbreeds.data.BuildConfig
-import com.pedromfmachado.sword.catz.catbreeds.data.api.CatApiService
+import com.pedromfmachado.sword.catz.BuildConfig
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -14,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object BaseNetworkModule {
 
     private const val BASE_URL = "https://api.thecatapi.com/v1/"
 
@@ -42,9 +41,4 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-
-    @Provides
-    @Singleton
-    fun provideCatApiService(retrofit: Retrofit): CatApiService =
-        retrofit.create(CatApiService::class.java)
 }
