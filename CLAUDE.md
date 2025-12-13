@@ -9,6 +9,7 @@ Android app for browsing and favoriting cats.
 - **Hilt** 2.57.2 (DI)
 - **Navigation Compose** 2.9.6
 - **Coil** 3.1.0 (image loading)
+- **Retrofit** 2.11.0 + **Moshi** 1.15.1 (networking)
 - **SDK**: Min 30, Target/Compile 36
 
 ## Architecture
@@ -35,22 +36,26 @@ cat_breeds_data    cat_breeds
 - `app/` - Main application module (navigation shell, entry points, DI wiring)
   - `core/` - Application, MainActivity
   - `presentation/ui/` - MainScreen (root NavHost), TabsScreen (nested NavHost with bottom nav)
+  - `di/` - BaseNetworkModule (OkHttpClient, Moshi, Retrofit)
 
 - `cat_breeds_api/` - Pure Kotlin module with domain contracts (fastest compilation)
   - `domain/model/` - Breed data class
   - `domain/repository/` - BreedRepository interface
+  - `domain/result/` - Result sealed class for error handling
 
 - `cat_breeds_data/` - Data layer implementation
+  - `data/api/` - CatApiService (Retrofit), DTOs
+  - `data/mapper/` - BreedMapper (DTO to domain)
   - `data/repository/` - BreedRepositoryImpl
-  - `data/mock/` - MockBreedData
-  - `data/di/` - Hilt module (BreedDataModule)
+  - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
   - `presentation/navigation/` - CatBreedsRoutes (List, Favorites, Detail)
   - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
-  - `presentation/ui/components/` - Reusable UI components (BreedList, BreedListItem)
-  - `presentation/viewmodel/` - ViewModels (BreedListViewModel, BreedFavoritesViewModel, BreedDetailViewModel)
-  - `src/debug/` - Preview data (PreviewData.kt) - excluded from release builds
+  - `presentation/ui/components/breed/` - BreedList, BreedListItem
+  - `presentation/ui/components/common/` - LoadingContent, ErrorContent
+  - `presentation/viewmodel/` - ViewModels with StateFlow and UiState sealed classes
+  - `preview/` - PreviewData for Compose previews
 
 ### Navigation Structure (Nested NavHosts)
 ```
@@ -78,7 +83,7 @@ MainScreen (RootNavHost)
 
 ## Testing
 
-- **Unit**: JUnit 4, Mockito, Robolectric
+- **Unit**: JUnit 4, Mockito, TestParameterInjector, Coroutines Test
 - **UI**: Espresso, Compose UI Test
 
 ## Conventions
@@ -104,11 +109,13 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 
 - `gradle/libs.versions.toml` - Dependencies
 - `settings.gradle.kts` - Module includes
-- `app/build.gradle.kts` - App config
-- `cat_breeds_api/build.gradle.kts` - API module config (pure Kotlin)
-- `cat_breeds_data/build.gradle.kts` - Data module config
-- `cat_breeds/build.gradle.kts` - Feature module config
+- `app/build.gradle.kts` - App config (includes API key BuildConfig)
+- `app/src/main/java/.../di/BaseNetworkModule.kt` - Base networking DI
 - `cat_breeds_api/src/main/java/.../domain/model/Breed.kt` - Breed model
 - `cat_breeds_api/src/main/java/.../domain/repository/BreedRepository.kt` - Repository interface
-- `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Hilt DI bindings
+- `cat_breeds_api/src/main/java/.../domain/result/Result.kt` - Result sealed class
+- `cat_breeds_data/src/main/java/.../data/api/CatApiService.kt` - Retrofit API interface
+- `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
+- `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
 - `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
+- `cat_breeds/src/main/java/.../presentation/ui/components/common/` - Shared UI components
