@@ -4,13 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pedromfmachado.sword.catz.catbreeds.data.mock.MockBreedData
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
+fun FavoritesScreen(
+    onBreedClick: (Breed) -> Unit,
+    modifier: Modifier = Modifier
+) {
     BreedList(
         breeds = MockBreedData.favoriteBreeds,
-        onBreedClick = { /* No action for now */ },
+        onBreedClick = onBreedClick,
         onFavoriteClick = { /* No action for now */ },
         modifier = modifier
     )
@@ -19,5 +23,5 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun FavoritesScreenPreview() {
-    FavoritesScreen()
+    FavoritesScreen(onBreedClick = {})
 }

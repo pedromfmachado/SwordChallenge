@@ -4,13 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pedromfmachado.sword.catz.catbreeds.data.mock.MockBreedData
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 
 @Composable
-fun ListScreen(modifier: Modifier = Modifier) {
+fun ListScreen(
+    onBreedClick: (Breed) -> Unit,
+    modifier: Modifier = Modifier
+) {
     BreedList(
         breeds = MockBreedData.breeds,
-        onBreedClick = { /* No action for now */ },
+        onBreedClick = onBreedClick,
         onFavoriteClick = { /* No action for now */ },
         modifier = modifier
     )
@@ -19,5 +23,5 @@ fun ListScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun ListScreenPreview() {
-    ListScreen()
+    ListScreen(onBreedClick = {})
 }

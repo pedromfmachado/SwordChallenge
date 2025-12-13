@@ -107,6 +107,9 @@ private fun BreedListItemPreview() {
             id = "1",
             name = "Persian",
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
+            origin = "Iran (Persia)",
+            temperament = "Affectionate, Loyal, Quiet, Gentle",
+            description = "Persians are known for their long, luxurious coats.",
             isFavorite = false
         ),
         onClick = {},
@@ -122,6 +125,9 @@ private fun BreedListItemFavoritePreview() {
             id = "1",
             name = "Persian",
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
+            origin = "Iran (Persia)",
+            temperament = "Affectionate, Loyal, Quiet, Gentle",
+            description = "Persians are known for their long, luxurious coats.",
             isFavorite = true
         ),
         onClick = {},

@@ -7,6 +7,12 @@
     <!-- Breed Component -->
     <string name="breed_empty_message">Nenhuma raça disponível</string>
 
+    <!-- Breed Detail -->
+    <string name="breed_detail_back">Voltar</string>
+    <string name="breed_origin_label">Origem</string>
+    <string name="breed_temperament_label">Temperamento</string>
+    <string name="breed_description_label">Descrição</string>
+
     <!-- Accessibility -->
     <string name="a11y_breed_image_description">Imagem da raça de gato %1$s</string>
     <string name="a11y_breed_favorite_add">Adicionar %1$s aos favoritos</string>
