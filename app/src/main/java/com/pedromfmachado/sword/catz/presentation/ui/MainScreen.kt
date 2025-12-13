@@ -31,13 +31,13 @@ sealed class BottomNavItem(
     val unselectedIcon: ImageVector
 ) {
     data object List : BottomNavItem(
-        titleResId = R.string.nav_list,
+        titleResId = R.string.nav_list_label,
         selectedIcon = Icons.AutoMirrored.Filled.List,
         unselectedIcon = Icons.AutoMirrored.Outlined.List
     )
 
     data object Favorites : BottomNavItem(
-        titleResId = R.string.nav_favorites,
+        titleResId = R.string.nav_favorites_label,
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder
     )

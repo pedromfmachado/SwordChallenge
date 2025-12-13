@@ -36,6 +36,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    // Coil (Image Loading)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
 

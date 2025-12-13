@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Screens -->
     <string name="list_screen_title">Ecrã de Lista</string>
     <string name="favorites_screen_title">Ecrã de Favoritos</string>
+
+    <!-- Breed Component -->
+    <string name="breed_empty_message">Nenhuma raça disponível</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_breed_image_description">Imagem da raça de gato %1$s</string>
+    <string name="a11y_breed_favorite_add">Adicionar %1$s aos favoritos</string>
+    <string name="a11y_breed_favorite_remove">Remover %1$s dos favoritos</string>
 </resources>
