@@ -2,7 +2,6 @@ package com.pedromfmachado.sword.catz.catbreeds.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -123,7 +121,10 @@ private fun DetailScreenContent(
         ) {
             AsyncImage(
                 model = breed.imageUrl,
-                contentDescription = stringResource(R.string.a11y_breed_image_description, breed.name),
+                contentDescription = stringResource(
+                    R.string.a11y_breed_image_description,
+                    breed.name
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)

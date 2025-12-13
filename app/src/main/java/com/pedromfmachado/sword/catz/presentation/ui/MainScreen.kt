@@ -32,6 +32,7 @@ fun MainScreen() {
             route = CatBreedsRoute.Detail.route,
             arguments = listOf(navArgument("breedId") { type = NavType.StringType })
         ) { backStackEntry ->
+            // TODO navigate to error screen when no id is defined
             val breedId = backStackEntry.arguments?.getString("breedId") ?: return@composable
             DetailScreen(
                 breedId = breedId,

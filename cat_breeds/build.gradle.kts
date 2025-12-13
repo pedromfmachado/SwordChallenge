@@ -14,9 +14,6 @@ android {
 
     defaultConfig {
         minSdk = 30
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     compileOptions {
@@ -46,11 +43,6 @@ dependencies {
 
     // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
-
-    // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // Hilt
     implementation(libs.hilt.android)
