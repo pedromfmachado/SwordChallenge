@@ -1,17 +1,14 @@
 package com.pedromfmachado.sword.catz.catbreeds.presentation.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +18,8 @@ import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.LoadingContent
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesUiState
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
 
@@ -33,14 +32,7 @@ fun FavoritesScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     when (val state = uiState) {
-        is BreedFavoritesUiState.Loading -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is BreedFavoritesUiState.Loading -> LoadingContent(modifier = modifier)
         is BreedFavoritesUiState.Success -> {
             FavoritesScreenContent(
                 favoriteBreeds = state.breeds,
@@ -50,12 +42,10 @@ fun FavoritesScreen(
             )
         }
         is BreedFavoritesUiState.Error -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = state.message ?: stringResource(R.string.screen_favorites_error_generic))
-            }
+            ErrorContent(
+                message = state.message ?: stringResource(R.string.screen_favorites_error_generic),
+                modifier = modifier
+            )
         }
     }
 }
