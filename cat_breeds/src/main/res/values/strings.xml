@@ -1,0 +1,19 @@
+<resources>
+    <!-- Screens -->
+    <string name="list_screen_title">List Screen</string>
+    <string name="favorites_screen_title">Favorites Screen</string>
+
+    <!-- Breed Component -->
+    <string name="breed_empty_message">No breeds available</string>
+
+    <!-- Breed Detail -->
+    <string name="breed_detail_back">Go back</string>
+    <string name="breed_origin_label">Origin</string>
+    <string name="breed_temperament_label">Temperament</string>
+    <string name="breed_description_label">Description</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_breed_image_description">Image of %1$s cat breed</string>
+    <string name="a11y_breed_favorite_add">Add %1$s to favorites</string>
+    <string name="a11y_breed_favorite_remove">Remove %1$s from favorites</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.pedromfmachado.sword.presentation.ui.components.breed
+package com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pedromfmachado.sword.R
-import com.pedromfmachado.sword.data.mock.MockBreedData
-import com.pedromfmachado.sword.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.R
+import com.pedromfmachado.sword.catz.catbreeds.data.mock.MockBreedData
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
 @Composable
 fun BreedList(

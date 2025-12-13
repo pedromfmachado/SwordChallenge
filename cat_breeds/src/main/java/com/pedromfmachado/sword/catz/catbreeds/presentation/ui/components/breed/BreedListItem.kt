@@ -1,7 +1,6 @@
-package com.pedromfmachado.sword.presentation.ui.components.breed
+package com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,16 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.pedromfmachado.sword.R
-import com.pedromfmachado.sword.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.R
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
 private val FavoriteActiveColor = Color(0xFFE91E63)
 private val FavoriteInactiveColor = Color(0xFF757575)
@@ -108,6 +107,9 @@ private fun BreedListItemPreview() {
             id = "1",
             name = "Persian",
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
+            origin = "Iran (Persia)",
+            temperament = "Affectionate, Loyal, Quiet, Gentle",
+            description = "Persians are known for their long, luxurious coats.",
             isFavorite = false
         ),
         onClick = {},
@@ -123,6 +125,9 @@ private fun BreedListItemFavoritePreview() {
             id = "1",
             name = "Persian",
             imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
+            origin = "Iran (Persia)",
+            temperament = "Affectionate, Loyal, Quiet, Gentle",
+            description = "Persians are known for their long, luxurious coats.",
             isFavorite = true
         ),
         onClick = {},

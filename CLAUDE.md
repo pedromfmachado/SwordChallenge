@@ -13,9 +13,26 @@ Android app for browsing and favoriting cats.
 
 ## Architecture
 
-Clean Architecture with:
-- `core/` - App setup (Application, MainActivity)
-- `presentation/ui/` - Compose screens
+Multi-module Clean Architecture:
+- `app/` - Main application module (navigation shell, entry points)
+  - `core/` - Application, MainActivity
+  - `presentation/ui/` - MainScreen (root NavHost), TabsScreen (nested NavHost with bottom nav)
+- `cat_breeds/` - Feature module for cat breed screens
+  - `domain/model/` - Breed data class (id, name, imageUrl, origin, temperament, description, isFavorite)
+  - `data/mock/` - MockBreedData with sample breeds
+  - `presentation/navigation/` - CatBreedsRoutes (List, Favorites, Detail)
+  - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
+  - `presentation/ui/components/` - Reusable UI components (BreedList, BreedListItem)
+
+### Navigation Structure (Nested NavHosts)
+```
+MainScreen (RootNavHost)
+├── "tabs" -> TabsScreen (Scaffold + bottom bar)
+│   └── TabsNavHost
+│       ├── breeds_list -> ListScreen
+│       └── breeds_favorites -> FavoritesScreen
+└── breeds_detail/{breedId} -> DetailScreen (full screen)
+```
 
 ## Commands
 
@@ -39,7 +56,7 @@ Clean Architecture with:
 ## Conventions
 
 - **Branches**: `feature/{issue-number}-{description}`
-- **Package**: `com.pedromfmachado.sword`
+- **Package**: `com.pedromfmachado.sword.catz` (app), `com.pedromfmachado.sword.catz.catbreeds` (cat_breeds)
 - **Localization**: English (default), Portuguese (`values-pt/`)
 - **Version Catalog**: `gradle/libs.versions.toml`
 
@@ -58,6 +75,11 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 ## Key Files
 
 - `app/build.gradle.kts` - App config
+- `cat_breeds/build.gradle.kts` - Feature module config
 - `gradle/libs.versions.toml` - Dependencies
-- `app/src/main/java/com/pedromfmachado/sword/core/` - Entry points
-- `app/src/main/java/com/pedromfmachado/sword/presentation/ui/` - UI components
+- `app/src/main/java/com/pedromfmachado/sword/catz/core/` - Entry points
+- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/MainScreen.kt` - Root NavHost (tabs + detail routes)
+- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/TabsScreen.kt` - Nested NavHost with bottom navigation
+- `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/domain/model/Breed.kt` - Breed model
+- `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
+- `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/presentation/ui/` - Feature screens (List, Favorites, Detail)
