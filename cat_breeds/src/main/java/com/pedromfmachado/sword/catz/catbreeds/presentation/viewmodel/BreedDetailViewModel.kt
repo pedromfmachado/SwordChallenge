@@ -2,8 +2,8 @@ package com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.api.repository.BreedRepository
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.presentation.navigation.CatBreedsRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 private val FavoriteActiveColor = Color(0xFFE91E63)

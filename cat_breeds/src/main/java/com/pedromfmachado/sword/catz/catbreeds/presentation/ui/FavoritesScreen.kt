@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData

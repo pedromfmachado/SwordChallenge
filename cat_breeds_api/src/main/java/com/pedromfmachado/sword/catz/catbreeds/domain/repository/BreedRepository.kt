@@ -1,6 +1,6 @@
-package com.pedromfmachado.sword.catz.catbreeds.api.repository
+package com.pedromfmachado.sword.catz.catbreeds.domain.repository
 
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
 interface BreedRepository {
     fun getBreeds(): List<Breed>

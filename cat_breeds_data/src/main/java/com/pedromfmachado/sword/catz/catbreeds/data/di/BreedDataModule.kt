@@ -1,6 +1,6 @@
 package com.pedromfmachado.sword.catz.catbreeds.data.di
 
-import com.pedromfmachado.sword.catz.catbreeds.api.repository.BreedRepository
+import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.data.repository.BreedRepositoryImpl
 import dagger.Binds
 import dagger.Module

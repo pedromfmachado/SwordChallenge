@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 @Composable

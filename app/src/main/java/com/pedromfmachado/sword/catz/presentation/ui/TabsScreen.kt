@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pedromfmachado.sword.catz.R
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.navigation.CatBreedsRoute
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.FavoritesScreen
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.ListScreen

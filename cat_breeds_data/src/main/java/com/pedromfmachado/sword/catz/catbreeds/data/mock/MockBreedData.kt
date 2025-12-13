@@ -1,6 +1,6 @@
 package com.pedromfmachado.sword.catz.catbreeds.data.mock
 
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
 internal object MockBreedData {
     val breeds = listOf(

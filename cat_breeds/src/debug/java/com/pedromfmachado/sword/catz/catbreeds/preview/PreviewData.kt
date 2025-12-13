@@ -1,6 +1,6 @@
 package com.pedromfmachado.sword.catz.catbreeds.preview
 
-import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 
 object PreviewData {
 
