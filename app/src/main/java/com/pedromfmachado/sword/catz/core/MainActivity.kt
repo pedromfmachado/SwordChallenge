@@ -1,10 +1,10 @@
-package com.pedromfmachado.sword.core
+package com.pedromfmachado.sword.catz.core
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.pedromfmachado.sword.presentation.ui.MainScreen
+import com.pedromfmachado.sword.catz.presentation.ui.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

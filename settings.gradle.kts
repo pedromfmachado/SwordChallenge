@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Sword Challenge"
 include(":app")
+include(":cat_breeds")

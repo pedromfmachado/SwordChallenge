@@ -13,9 +13,12 @@ Android app for browsing and favoriting cats.
 
 ## Architecture
 
-Clean Architecture with:
-- `core/` - App setup (Application, MainActivity)
-- `presentation/ui/` - Compose screens
+Multi-module Clean Architecture:
+- `app/` - Main application module (navigation shell, entry points)
+  - `core/` - Application, MainActivity
+  - `presentation/ui/` - MainScreen with bottom navigation
+- `cat_breeds/` - Feature module for cat breed screens
+  - `presentation/ui/` - ListScreen, FavoritesScreen
 
 ## Commands
 
@@ -39,13 +42,15 @@ Clean Architecture with:
 ## Conventions
 
 - **Branches**: `feature/{issue-number}-{description}`
-- **Package**: `com.pedromfmachado.sword`
+- **Package**: `com.pedromfmachado.sword.catz` (app), `com.pedromfmachado.sword.catz.catbreeds` (cat_breeds)
 - **Localization**: English (default), Portuguese (`values-pt/`)
 - **Version Catalog**: `gradle/libs.versions.toml`
 
 ## Key Files
 
 - `app/build.gradle.kts` - App config
+- `cat_breeds/build.gradle.kts` - Feature module config
 - `gradle/libs.versions.toml` - Dependencies
-- `app/src/main/java/com/pedromfmachado/sword/core/` - Entry points
-- `app/src/main/java/com/pedromfmachado/sword/presentation/ui/` - UI components
+- `app/src/main/java/com/pedromfmachado/sword/catz/core/` - Entry points
+- `app/src/main/java/com/pedromfmachado/sword/catz/presentation/ui/` - Navigation shell
+- `cat_breeds/src/main/java/com/pedromfmachado/sword/catz/catbreeds/presentation/ui/` - Feature screens

@@ -1,8 +1,6 @@
-package com.pedromfmachado.sword.presentation.ui
+package com.pedromfmachado.sword.catz.presentation.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -19,12 +17,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.pedromfmachado.sword.R
+import com.pedromfmachado.sword.catz.R
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.FavoritesScreen
+import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.ListScreen
 
 sealed class BottomNavItem(
     @StringRes val titleResId: Int,
@@ -76,26 +75,6 @@ fun MainScreen() {
             0 -> ListScreen(modifier = Modifier.padding(innerPadding))
             1 -> FavoritesScreen(modifier = Modifier.padding(innerPadding))
         }
-    }
-}
-
-@Composable
-fun ListScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = stringResource(R.string.list_screen_title))
-    }
-}
-
-@Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = stringResource(R.string.favorites_screen_title))
     }
 }
 

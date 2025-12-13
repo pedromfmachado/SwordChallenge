@@ -3,6 +3,4 @@
     <string name="app_name">Os Gatos</string>
     <string name="nav_list">Lista</string>
     <string name="nav_favorites">Favoritos</string>
-    <string name="list_screen_title">Ecrã de Lista</string>
-    <string name="favorites_screen_title">Ecrã de Favoritos</string>
 </resources>
