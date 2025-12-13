@@ -26,6 +26,9 @@ android {
 }
 
 dependencies {
+    // Modules
+    implementation(project(":cat_breeds_api"))
+
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -36,6 +39,7 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coil (Image Loading)
     implementation(libs.coil.compose)

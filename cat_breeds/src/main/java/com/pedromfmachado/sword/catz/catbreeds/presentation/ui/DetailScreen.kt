@@ -31,22 +31,23 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.data.mock.MockBreedData
-import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedDetailViewModel
+import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 private val FavoriteActiveColor = Color(0xFFE91E63)
 private val FavoriteInactiveColor = Color(0xFF757575)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
-    breedId: String,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: BreedDetailViewModel = hiltViewModel()
 ) {
-    val breed = MockBreedData.findBreedById(breedId)
+    val breed = viewModel.breed
 
     if (breed == null) {
         Text(text = "Breed not found")
@@ -189,17 +190,7 @@ private fun DetailSection(
 @Composable
 private fun DetailScreenPreview() {
     DetailScreenContent(
-        breed = Breed(
-            id = "1",
-            name = "Persian",
-            imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
-            origin = "Iran (Persia)",
-            temperament = "Affectionate, Loyal, Quiet, Gentle",
-            description = "Persians are known for their long, luxurious coats and sweet, gentle personalities.",
-            lifespanLow = 12,
-            lifespanHigh = 17,
-            isFavorite = false
-        ),
+        breed = PreviewData.persianBreed,
         onBackClick = {},
         onFavoriteClick = {}
     )

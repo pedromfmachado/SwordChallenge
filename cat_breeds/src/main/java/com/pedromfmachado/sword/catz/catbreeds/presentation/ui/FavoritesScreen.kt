@@ -11,22 +11,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.data.mock.MockBreedData
-import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
+import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
+import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 @Composable
 fun FavoritesScreen(
     onBreedClick: (Breed) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: BreedFavoritesViewModel = hiltViewModel()
+) {
+    FavoritesScreenContent(
+        favoriteBreeds = viewModel.favoriteBreeds,
+        averageLifespan = viewModel.averageLifespan,
+        onBreedClick = onBreedClick,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun FavoritesScreenContent(
+    favoriteBreeds: List<Breed>,
+    averageLifespan: Int?,
+    onBreedClick: (Breed) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val favoriteBreeds = MockBreedData.favoriteBreeds
-    val averageLifespan = favoriteBreeds.takeIf { it.isNotEmpty() }
-        ?.map { it.lifespanLow }
-        ?.average()
-        ?.toInt()
-
     Column(modifier = modifier.fillMaxSize()) {
         if (averageLifespan != null) {
             Text(
@@ -49,5 +61,9 @@ fun FavoritesScreen(
 @Preview(showBackground = true)
 @Composable
 private fun FavoritesScreenPreview() {
-    FavoritesScreen(onBreedClick = {})
+    FavoritesScreenContent(
+        favoriteBreeds = PreviewData.favoriteBreeds,
+        averageLifespan = 12,
+        onBreedClick = {}
+    )
 }

@@ -34,6 +34,8 @@ android {
 dependencies {
     // Feature modules
     implementation(project(":cat_breeds"))
+    implementation(project(":cat_breeds_api"))
+    implementation(project(":cat_breeds_data"))
 
     // AndroidX Core
     implementation(libs.androidx.core.ktx)

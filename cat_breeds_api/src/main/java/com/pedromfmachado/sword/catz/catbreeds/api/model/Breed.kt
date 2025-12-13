@@ -1,4 +1,4 @@
-package com.pedromfmachado.sword.catz.catbreeds.domain.model
+package com.pedromfmachado.sword.catz.catbreeds.api.model
 
 data class Breed(
     val id: String,

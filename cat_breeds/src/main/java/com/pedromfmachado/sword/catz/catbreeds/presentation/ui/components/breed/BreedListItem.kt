@@ -28,7 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.pedromfmachado.sword.catz.catbreeds.R
-import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.api.model.Breed
+import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 private val FavoriteActiveColor = Color(0xFFE91E63)
 private val FavoriteInactiveColor = Color(0xFF757575)
@@ -103,17 +104,7 @@ fun BreedListItem(
 @Composable
 private fun BreedListItemPreview() {
     BreedListItem(
-        breed = Breed(
-            id = "1",
-            name = "Persian",
-            imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
-            origin = "Iran (Persia)",
-            temperament = "Affectionate, Loyal, Quiet, Gentle",
-            description = "Persians are known for their long, luxurious coats.",
-            lifespanLow = 12,
-            lifespanHigh = 17,
-            isFavorite = false
-        ),
+        breed = PreviewData.persianBreed,
         onClick = {},
         onFavoriteClick = {}
     )
@@ -123,17 +114,7 @@ private fun BreedListItemPreview() {
 @Composable
 private fun BreedListItemFavoritePreview() {
     BreedListItem(
-        breed = Breed(
-            id = "1",
-            name = "Persian",
-            imageUrl = "https://cdn2.thecatapi.com/images/OGTWqNNOt.jpg",
-            origin = "Iran (Persia)",
-            temperament = "Affectionate, Loyal, Quiet, Gentle",
-            description = "Persians are known for their long, luxurious coats.",
-            lifespanLow = 12,
-            lifespanHigh = 17,
-            isFavorite = true
-        ),
+        breed = PreviewData.maineCoonBreed,
         onClick = {},
         onFavoriteClick = {}
     )
