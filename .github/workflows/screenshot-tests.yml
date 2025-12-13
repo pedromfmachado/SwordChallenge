@@ -22,3 +22,11 @@ jobs:
 
       - name: Validate screenshot tests
         run: ./gradlew :cat_breeds:validateDebugScreenshotTest
+
+      - name: Upload screenshot test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-test-report
+          path: cat_breeds/build/reports/screenshotTest/
+          retention-days: 14
