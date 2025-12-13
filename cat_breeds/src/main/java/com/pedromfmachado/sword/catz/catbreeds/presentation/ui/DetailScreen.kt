@@ -149,6 +149,14 @@ private fun DetailScreenContent(
                 )
 
                 DetailSection(
+                    label = stringResource(R.string.breed_lifespan_label),
+                    value = stringResource(
+                        R.string.breed_lifespan_years,
+                        "${breed.lifespanLow} - ${breed.lifespanHigh}"
+                    )
+                )
+
+                DetailSection(
                     label = stringResource(R.string.breed_description_label),
                     value = breed.description
                 )
@@ -188,6 +196,8 @@ private fun DetailScreenPreview() {
             origin = "Iran (Persia)",
             temperament = "Affectionate, Loyal, Quiet, Gentle",
             description = "Persians are known for their long, luxurious coats and sweet, gentle personalities.",
+            lifespanLow = 12,
+            lifespanHigh = 17,
             isFavorite = false
         ),
         onBackClick = {},

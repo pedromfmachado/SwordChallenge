@@ -110,6 +110,8 @@ private fun BreedListItemPreview() {
             origin = "Iran (Persia)",
             temperament = "Affectionate, Loyal, Quiet, Gentle",
             description = "Persians are known for their long, luxurious coats.",
+            lifespanLow = 12,
+            lifespanHigh = 17,
             isFavorite = false
         ),
         onClick = {},
@@ -128,6 +130,8 @@ private fun BreedListItemFavoritePreview() {
             origin = "Iran (Persia)",
             temperament = "Affectionate, Loyal, Quiet, Gentle",
             description = "Persians are known for their long, luxurious coats.",
+            lifespanLow = 12,
+            lifespanHigh = 17,
             isFavorite = true
         ),
         onClick = {},

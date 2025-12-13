@@ -2,6 +2,7 @@
     <!-- Screens -->
     <string name="list_screen_title">List Screen</string>
     <string name="favorites_screen_title">Favorites Screen</string>
+    <string name="favorites_average_lifespan">Average lifespan: %1$d years</string>
 
     <!-- Breed Component -->
     <string name="breed_empty_message">No breeds available</string>
@@ -11,6 +12,8 @@
     <string name="breed_origin_label">Origin</string>
     <string name="breed_temperament_label">Temperament</string>
     <string name="breed_description_label">Description</string>
+    <string name="breed_lifespan_label">Lifespan</string>
+    <string name="breed_lifespan_years">%1$s years</string>
 
     <!-- Accessibility -->
     <string name="a11y_breed_image_description">Image of %1$s cat breed</string>
