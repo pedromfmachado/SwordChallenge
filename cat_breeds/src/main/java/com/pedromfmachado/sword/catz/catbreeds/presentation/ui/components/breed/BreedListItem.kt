@@ -24,12 +24,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 private val FavoriteActiveColor = Color(0xFFE91E63)
 private val FavoriteInactiveColor = Color(0xFF757575)
@@ -98,24 +96,4 @@ fun BreedListItem(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BreedListItemPreview() {
-    BreedListItem(
-        breed = PreviewData.persianBreed,
-        onClick = {},
-        onFavoriteClick = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BreedListItemFavoritePreview() {
-    BreedListItem(
-        breed = PreviewData.maineCoonBreed,
-        onClick = {},
-        onFavoriteClick = {}
-    )
 }

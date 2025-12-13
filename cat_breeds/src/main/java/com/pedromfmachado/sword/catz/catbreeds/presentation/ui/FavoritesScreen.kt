@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.R
@@ -22,7 +21,6 @@ import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesUiState
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
-import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 @Composable
 fun FavoritesScreen(
@@ -61,7 +59,7 @@ fun FavoritesScreen(
 }
 
 @Composable
-private fun FavoritesScreenContent(
+internal fun FavoritesScreenContent(
     favoriteBreeds: List<Breed>,
     averageLifespan: Int?,
     onBreedClick: (Breed) -> Unit,
@@ -84,14 +82,4 @@ private fun FavoritesScreenContent(
             modifier = Modifier.weight(1f)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun FavoritesScreenPreview() {
-    FavoritesScreenContent(
-        favoriteBreeds = PreviewData.favoriteBreeds,
-        averageLifespan = 12,
-        onBreedClick = {}
-    )
 }
