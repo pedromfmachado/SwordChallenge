@@ -3,7 +3,6 @@ package com.pedromfmachado.sword.catz.catbreeds.data.di
 import com.pedromfmachado.sword.catz.catbreeds.data.BuildConfig
 import com.pedromfmachado.sword.catz.catbreeds.data.api.CatApiService
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,10 +32,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi =
-        Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+    fun provideMoshi(): Moshi = Moshi.Builder().build()
 
     @Provides
     @Singleton
