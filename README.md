@@ -50,4 +50,3 @@ Multi-module Clean Architecture with feature modules.
 
 GitHub Actions workflows run on pull requests:
 - **Unit Tests** - Runs all unit tests
-- **Screenshot Tests** - Validates Compose preview screenshots
