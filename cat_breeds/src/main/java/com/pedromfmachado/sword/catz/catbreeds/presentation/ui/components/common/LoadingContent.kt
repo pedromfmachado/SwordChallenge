@@ -22,6 +22,6 @@ fun LoadingContent(
 
 @Preview(showBackground = true)
 @Composable
-private fun LoadingContentPreview() {
+internal fun LoadingContentPreview() {
     LoadingContent()
 }

@@ -102,7 +102,7 @@ fun BreedListItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun BreedListItemPreview() {
+internal fun BreedListItemPreview() {
     BreedListItem(
         breed = PreviewData.persianBreed,
         onClick = {},
@@ -112,7 +112,7 @@ private fun BreedListItemPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun BreedListItemFavoritePreview() {
+internal fun BreedListItemFavoritePreview() {
     BreedListItem(
         breed = PreviewData.maineCoonBreed,
         onClick = {},

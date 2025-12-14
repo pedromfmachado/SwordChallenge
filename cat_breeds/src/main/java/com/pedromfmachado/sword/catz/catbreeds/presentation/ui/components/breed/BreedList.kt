@@ -56,7 +56,7 @@ fun BreedList(
 
 @Preview(showBackground = true)
 @Composable
-private fun BreedListPreview() {
+internal fun BreedListPreview() {
     BreedList(
         breeds = PreviewData.breeds,
         onBreedClick = {},
@@ -66,7 +66,7 @@ private fun BreedListPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun BreedListEmptyPreview() {
+internal fun BreedListEmptyPreview() {
     BreedList(
         breeds = emptyList(),
         onBreedClick = {},
