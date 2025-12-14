@@ -10,6 +10,7 @@ Android app for browsing and favoriting cats.
 - **Navigation Compose** 2.9.6
 - **Coil** 3.1.0 (image loading)
 - **Retrofit** 2.11.0 + **Moshi** 1.15.1 (networking)
+- **Room** 2.7.1 (offline caching)
 - **SDK**: Min 30, Target/Compile 36
 
 ## Architecture
@@ -45,9 +46,11 @@ cat_breeds_data    cat_breeds
 
 - `cat_breeds_data/` - Data layer implementation
   - `data/api/` - CatApiService (Retrofit), DTOs
-  - `data/mapper/` - BreedMapper (DTO to domain)
-  - `data/repository/` - BreedRepositoryImpl
-  - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule)
+  - `data/local/` - Room database, DAOs, entities
+  - `data/cache/` - Cache configuration (24h TTL)
+  - `data/mapper/` - BreedMapper (DTO to domain), BreedEntityMapper (entity to domain)
+  - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback)
+  - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
   - `presentation/navigation/` - CatBreedsRoutes (List, Favorites, Detail)
@@ -66,6 +69,13 @@ MainScreen (RootNavHost)
 │       └── breeds_favorites -> FavoritesScreen
 └── breeds_detail/{breedId} -> DetailScreen (full screen)
 ```
+
+### Caching Strategy
+
+- **List screen**: Network-first with cache fallback. Fetches from API if cache expired (24h TTL), falls back to stale cache on network failure.
+- **Detail screen**: Cache-only. The `/breeds/:breed_id` endpoint doesn't return images, so we rely on cached data from the list.
+- **TTL**: 24 hours, chosen due to low variability of breed data.
+- **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
 
 ## Commands
 
@@ -120,6 +130,9 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds_api/src/main/java/.../domain/repository/BreedRepository.kt` - Repository interface
 - `cat_breeds_api/src/main/java/.../domain/result/Result.kt` - Result sealed class
 - `cat_breeds_data/src/main/java/.../data/api/CatApiService.kt` - Retrofit API interface
+- `cat_breeds_data/src/main/java/.../data/local/CatBreedsDatabase.kt` - Room database
+- `cat_breeds_data/src/main/java/.../data/local/dao/BreedDao.kt` - Breed data access
+- `cat_breeds_data/src/main/java/.../data/cache/CacheConfig.kt` - Cache TTL configuration
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
 - `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoutes.kt` - Navigation routes

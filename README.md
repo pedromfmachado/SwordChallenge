@@ -23,12 +23,21 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch cat breed data.
 - **Jetpack Compose** (Material 3)
 - **Hilt** for dependency injection
 - **Retrofit** + **Moshi** for networking
+- **Room** for offline caching
 - **Coil** for image loading
 - **Navigation Compose** for navigation
 
 ## Architecture
 
 Multi-module Clean Architecture with feature modules.
+
+### Offline Support
+
+Breeds are cached locally using Room with a network-first strategy:
+- **List**: Fetches from network if cache expired (24h TTL), falls back to cache on failure
+- **Detail**: Cache-only (the API detail endpoint doesn't return images)
+
+The 24h TTL was chosen due to the low variability of breed data.
 
 ## Building
 
