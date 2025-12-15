@@ -60,7 +60,7 @@ fun DetailScreen(
             DetailScreenContent(
                 breed = state.breed,
                 onBackClick = onBackClick,
-                onFavoriteClick = { /* No action for now */ },
+                onFavoriteClick = { viewModel.toggleFavorite() },
                 modifier = modifier
             )
         }

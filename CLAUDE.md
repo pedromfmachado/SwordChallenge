@@ -46,10 +46,10 @@ cat_breeds_data    cat_breeds
 
 - `cat_breeds_data/` - Data layer implementation
   - `data/api/` - CatApiService (Retrofit), DTOs
-  - `data/local/` - Room database, DAOs, entities
+  - `data/local/` - Room database, DAOs, entities (BreedEntity, FavoriteEntity, CacheMetadataEntity)
   - `data/cache/` - Cache configuration (24h TTL)
   - `data/mapper/` - BreedMapper (DTO to domain), BreedEntityMapper (entity to domain)
-  - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback)
+  - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback, favorites management)
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
@@ -77,6 +77,23 @@ MainScreen (RootNavHost)
 - **TTL**: 24 hours, chosen due to low variability of breed data.
 - **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
 
+### Favorites Architecture
+
+Favorites are stored in a **separate `favorites` table** (not as a column on the breeds table). This design:
+- Preserves favorites during cache refreshes (breeds table can be fully replaced)
+- Cleanly separates API data from user preferences
+- Makes the caching logic simpler (no need to preserve state during refresh)
+
+**Data flow:**
+1. `FavoriteDao` manages the favorites table (add, remove, query via Flow)
+2. `BreedRepositoryImpl` exposes CRUD operations, `observeFavoriteBreeds()` and `observeFavoriteIds()` Flows
+3. `ToggleFavoriteUseCase` handles toggle business logic (add/remove based on current state)
+4. `BreedFavoritesViewModel` collects `observeFavoriteBreeds()` Flow - automatically updates when favorites change
+5. `BreedListViewModel` collects `observeFavoriteIds()` Flow - updates favorite status on loaded breeds in-place
+6. Users can toggle favorites from List, Favorites, and Detail screens
+
+**Reactive updates:** Both List and Favorites screens observe Room Flows, so changes made from any screen are automatically reflected. The List screen observes only favorite IDs (not full breeds) making it efficient and pagination-friendly.
+
 ## Commands
 
 ```bash
@@ -84,10 +101,12 @@ MainScreen (RootNavHost)
 ./gradlew assembleDebug
 
 # Run tests
-./gradlew test                                    # Unit tests
-./gradlew connectedCheck                          # Instrumentation tests
-./gradlew :cat_breeds:validateDebugScreenshotTest # Screenshot tests
-./gradlew :cat_breeds:updateDebugScreenshotTest   # Update screenshot references
+./gradlew testDebugUnitTest                       # Unit tests (all modules)
+./gradlew :module:testDebugUnitTest               # Unit tests (specific module)
+./gradlew validateDebugScreenshotTest             # Screenshot tests (all modules)
+./gradlew :module:validateDebugScreenshotTest     # Screenshot tests (specific module)
+./gradlew updateDebugScreenshotTest               # Update screenshot references (all modules)
+./gradlew :module:updateDebugScreenshotTest       # Update screenshot references (specific module)
 
 # Lint
 ./gradlew lint
@@ -132,8 +151,11 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds_data/src/main/java/.../data/api/CatApiService.kt` - Retrofit API interface
 - `cat_breeds_data/src/main/java/.../data/local/CatBreedsDatabase.kt` - Room database
 - `cat_breeds_data/src/main/java/.../data/local/dao/BreedDao.kt` - Breed data access
+- `cat_breeds_data/src/main/java/.../data/local/dao/FavoriteDao.kt` - Favorites data access
+- `cat_breeds_data/src/main/java/.../data/local/entity/FavoriteEntity.kt` - Favorites table entity
 - `cat_breeds_data/src/main/java/.../data/cache/CacheConfig.kt` - Cache TTL configuration
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
+- `cat_breeds/src/main/java/.../domain/usecase/ToggleFavoriteUseCase.kt` - Toggle favorite business logic
 - `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
 - `cat_breeds/src/main/java/.../presentation/ui/components/common/` - Shared UI components

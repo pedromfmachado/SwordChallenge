@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.pedromfmachado.sword.catz.catbreeds.data.local.CatBreedsDatabase
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.BreedDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.CacheMetadataDao
+import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +24,7 @@ object DatabaseModule {
             context,
             CatBreedsDatabase::class.java,
             "cat_breeds_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
 
     @Provides
     @Singleton
@@ -34,4 +35,9 @@ object DatabaseModule {
     @Singleton
     fun provideCacheMetadataDao(database: CatBreedsDatabase): CacheMetadataDao =
         database.cacheMetadataDao()
+
+    @Provides
+    @Singleton
+    fun provideFavoriteDao(database: CatBreedsDatabase): FavoriteDao =
+        database.favoriteDao()
 }

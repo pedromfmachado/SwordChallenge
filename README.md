@@ -2,6 +2,14 @@
 
 Android app for browsing and favoriting cat breeds, built as a challenge solution.
 
+## Features
+
+- **Browse Breeds** - View a list of cat breeds with images, names, and origin
+- **Breed Details** - See detailed information including temperament, lifespan, and description
+- **Favorites** - Mark breeds as favorites from any screen (list, detail, or favorites tab)
+- **Offline Support** - Breeds are cached locally for offline viewing
+- **Average Lifespan** - Favorites screen shows the average lifespan of your favorite breeds
+
 ## Running this project
 
 ### API Key Setup
@@ -36,8 +44,15 @@ Multi-module Clean Architecture with feature modules.
 Breeds are cached locally using Room with a network-first strategy:
 - **List**: Fetches from network if cache expired (24h TTL), falls back to cache on failure
 - **Detail**: Cache-only (the API detail endpoint doesn't return images)
+- **Favorites**: Stored in a separate table, persisted across cache refreshes, reactive updates via Flow
 
 The 24h TTL was chosen due to the low variability of breed data.
+
+### Reactive Favorites
+
+Both List and Favorites screens observe Room Flows, so changes made from any screen are automatically reflected:
+- **Favorites screen**: Observes full favorite breeds via `observeFavoriteBreeds()` Flow
+- **List screen**: Observes only favorite IDs via `observeFavoriteIds()` Flow, updating loaded breeds in-place (pagination-friendly)
 
 ## Building
 
@@ -49,15 +64,15 @@ The 24h TTL was chosen due to the low variability of breed data.
 
 ```bash
 # Unit tests (includes Robolectric Compose UI tests)
-./gradlew test
+./gradlew testDebugUnitTest
 
 # Screenshot tests
-./gradlew :cat_breeds:validateDebugScreenshotTest
+./gradlew validateDebugScreenshotTest
 ```
 
 ### Test Types
 
-- **Unit tests** - Repository tests, mapper tests, Compose UI tests (Robolectric)
+- **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
 ## CI
