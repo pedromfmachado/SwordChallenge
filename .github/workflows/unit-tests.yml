@@ -25,7 +25,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run unit tests
-        run: ./gradlew test --parallel --build-cache --no-daemon
+        run: ./gradlew testDebugUnitTest --parallel --build-cache --no-daemon
 
       - name: Upload test reports
         if: always()
