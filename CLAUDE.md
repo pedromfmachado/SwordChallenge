@@ -86,13 +86,13 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 
 **Data flow:**
 1. `FavoriteDao` manages the favorites table (add, remove, query via Flow)
-2. `BreedRepositoryImpl` exposes CRUD operations and `observeFavoriteBreeds()` Flow
+2. `BreedRepositoryImpl` exposes CRUD operations, `observeFavoriteBreeds()` and `observeFavoriteIds()` Flows
 3. `ToggleFavoriteUseCase` handles toggle business logic (add/remove based on current state)
-4. `BreedFavoritesViewModel` collects the Flow - automatically updates when favorites change
-5. Other ViewModels use optimistic UI updates for immediate feedback
+4. `BreedFavoritesViewModel` collects `observeFavoriteBreeds()` Flow - automatically updates when favorites change
+5. `BreedListViewModel` collects `observeFavoriteIds()` Flow - updates favorite status on loaded breeds in-place
 6. Users can toggle favorites from List, Favorites, and Detail screens
 
-**Reactive updates:** The FavoritesScreen uses Room's Flow support to automatically refresh when favorites change from any screen (including Detail). This eliminates the need for manual refresh when navigating back.
+**Reactive updates:** Both List and Favorites screens observe Room Flows, so changes made from any screen are automatically reflected. The List screen observes only favorite IDs (not full breeds) making it efficient and pagination-friendly.
 
 ## Commands
 

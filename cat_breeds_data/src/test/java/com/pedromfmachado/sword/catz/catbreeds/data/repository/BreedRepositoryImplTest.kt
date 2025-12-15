@@ -218,6 +218,15 @@ class BreedRepositoryImplTest {
     }
 
     @Test
+    fun `observeFavoriteIds emits set of favorite IDs`() = runTest {
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys", "beng")))
+
+        val result = repository.observeFavoriteIds().first()
+
+        assertEquals(setOf("abys", "beng"), result)
+    }
+
+    @Test
     fun `getBreedById returns breed with correct favorite status`() = runTest {
         whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
         whenever(favoriteDao.isFavorite("abys")).thenReturn(true)

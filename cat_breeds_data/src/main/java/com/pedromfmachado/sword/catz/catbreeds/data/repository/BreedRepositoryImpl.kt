@@ -93,6 +93,10 @@ internal class BreedRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeFavoriteIds(): Flow<Set<String>> {
+        return favoriteDao.getAllFavoriteIds().map { it.toSet() }
+    }
+
     override suspend fun addFavorite(breedId: String): Result<Unit> {
         return try {
             favoriteDao.addFavorite(FavoriteEntity(breedId))

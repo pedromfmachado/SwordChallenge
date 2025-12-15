@@ -50,7 +50,9 @@ The 24h TTL was chosen due to the low variability of breed data.
 
 ### Reactive Favorites
 
-The Favorites screen observes a Room Flow, so changes made from other screens (like toggling a favorite from the Detail screen) are automatically reflected when navigating back - no manual refresh needed.
+Both List and Favorites screens observe Room Flows, so changes made from any screen are automatically reflected:
+- **Favorites screen**: Observes full favorite breeds via `observeFavoriteBreeds()` Flow
+- **List screen**: Observes only favorite IDs via `observeFavoriteIds()` Flow, updating loaded breeds in-place (pagination-friendly)
 
 ## Building
 

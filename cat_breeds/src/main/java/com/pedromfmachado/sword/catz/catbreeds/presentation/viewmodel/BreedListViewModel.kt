@@ -10,6 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +26,23 @@ class BreedListViewModel @Inject constructor(
 
     init {
         loadBreeds()
+        observeFavoriteIds()
+    }
+
+    private fun observeFavoriteIds() {
+        breedRepository.observeFavoriteIds()
+            .onEach { favoriteIds -> updateFavoriteStatus(favoriteIds) }
+            .launchIn(viewModelScope)
+    }
+
+    private fun updateFavoriteStatus(favoriteIds: Set<String>) {
+        val currentState = _uiState.value
+        if (currentState is BreedListUiState.Success) {
+            val updatedBreeds = currentState.breeds.map { breed ->
+                breed.copy(isFavorite = breed.id in favoriteIds)
+            }
+            _uiState.value = BreedListUiState.Success(updatedBreeds)
+        }
     }
 
     fun loadBreeds() {
@@ -38,18 +57,8 @@ class BreedListViewModel @Inject constructor(
 
     fun toggleFavorite(breed: Breed) {
         viewModelScope.launch {
-            when (val result = toggleFavoriteUseCase(breed.id, breed.isFavorite)) {
-                is Result.Success -> {
-                    val currentState = _uiState.value
-                    if (currentState is BreedListUiState.Success) {
-                        val updatedBreeds = currentState.breeds.map {
-                            if (it.id == breed.id) it.copy(isFavorite = result.data) else it
-                        }
-                        _uiState.value = BreedListUiState.Success(updatedBreeds)
-                    }
-                }
-                is Result.Error -> { /* Optionally show error */ }
-            }
+            toggleFavoriteUseCase(breed.id, breed.isFavorite)
+            // No need to manually update state - observeFavoriteIds will handle it
         }
     }
 }
