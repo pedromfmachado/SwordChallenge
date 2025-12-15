@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -137,6 +138,8 @@ private fun DetailScreenContent(
                     .height(250.dp)
                     .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.cat_placeholder),
+                error = painterResource(R.drawable.cat_placeholder),
             )
 
             Column(
