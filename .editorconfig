@@ -14,6 +14,8 @@ ktlint_function_naming_ignore_when_annotated_with = Composable, Preview
 # Disable rules that add newlines after assignment operators
 ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_string-template-indent = disabled
+# Allow @Inject constructor on same line as class declaration
+ktlint_standard_annotation = disabled
 
 [*.xml]
 indent_size = 4

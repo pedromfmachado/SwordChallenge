@@ -4,7 +4,7 @@ import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.BreedDto
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import javax.inject.Inject
 
-class BreedMapper
+class BreedRemoteMapper
     @Inject
     constructor() {
         fun mapToDomain(dto: BreedDto): Breed {

@@ -4,7 +4,7 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import javax.inject.Inject
 
-class BreedEntityMapper
+class BreedLocalMapper
     @Inject
     constructor() {
         fun mapToDomain(entity: BreedEntity): Breed =

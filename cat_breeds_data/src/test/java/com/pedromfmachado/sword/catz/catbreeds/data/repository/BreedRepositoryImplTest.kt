@@ -10,8 +10,8 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.CacheMetadataEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
-import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedEntityMapper
-import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedMapper
+import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedLocalMapper
+import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedRemoteMapper
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
 import kotlinx.coroutines.flow.first
@@ -31,7 +31,7 @@ class BreedRepositoryImplTest {
     private val apiService = mock<CatApiService> {
         onBlocking { getBreeds() } doReturn listOf(BASE_DTO)
     }
-    private val mapper = mock<BreedMapper> {
+    private val remoteMapper = mock<BreedRemoteMapper> {
         on { mapToDomain(listOf(BASE_DTO)) } doReturn listOf(BASE_MODEL)
         on { mapToDomain(BASE_DTO) } doReturn BASE_MODEL
     }
@@ -41,7 +41,7 @@ class BreedRepositoryImplTest {
     private val cacheMetadataDao = mock<CacheMetadataDao> {
         onBlocking { getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY) } doReturn null
     }
-    private val entityMapper = mock<BreedEntityMapper> {
+    private val localMapper = mock<BreedLocalMapper> {
         on { mapToEntities(listOf(BASE_MODEL)) } doReturn listOf(BASE_ENTITY)
         on { mapToDomain(listOf(BASE_ENTITY)) } doReturn listOf(BASE_MODEL)
         on { mapToDomain(BASE_ENTITY) } doReturn BASE_MODEL
@@ -52,11 +52,11 @@ class BreedRepositoryImplTest {
     }
     private val repository = BreedRepositoryImpl(
         apiService,
-        mapper,
         breedDao,
-        cacheMetadataDao,
-        entityMapper,
         favoriteDao,
+        cacheMetadataDao,
+        remoteMapper,
+        localMapper,
     )
 
     @Test
