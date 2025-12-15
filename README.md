@@ -70,7 +70,7 @@ The Favorites screen observes a Room Flow, so changes made from other screens (l
 
 ### Test Types
 
-- **Unit tests** - Repository tests, ViewModel tests, UseCase tests, Compose UI tests (Robolectric)
+- **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
 ## CI
