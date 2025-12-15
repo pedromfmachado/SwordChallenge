@@ -1,6 +1,7 @@
 <resources>
     <!-- Screens -->
     <string name="list_screen_title">List Screen</string>
+    <string name="screen_list_search_hint">Search breeds…</string>
     <string name="favorites_screen_title">Favorites Screen</string>
     <string name="favorites_average_lifespan">Average lifespan: %1$d years</string>
     <string name="error_generic">Something went wrong</string>
@@ -20,4 +21,5 @@
     <string name="a11y_breed_image_description">Image of %1$s cat breed</string>
     <string name="a11y_breed_favorite_add">Add %1$s to favorites</string>
     <string name="a11y_breed_favorite_remove">Remove %1$s from favorites</string>
+    <string name="a11y_screen_list_clear_search">Clear search</string>
 </resources>

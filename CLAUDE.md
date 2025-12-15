@@ -78,6 +78,14 @@ MainScreen (RootNavHost)
 - **TTL**: 24 hours, chosen due to low variability of breed data.
 - **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
 
+### Search/Filtering
+
+The List screen includes a search bar that filters breeds by name:
+- **Implementation**: Room LIKE query on cached data (instant, works offline)
+- **Debounce**: 300ms delay to avoid excessive queries while typing
+- **Data flow**: `SearchBar` → `ViewModel.onSearchQueryChange()` → debounce → `BreedDao.searchBreeds()` → merge favorites → update UI
+- **Empty query**: Falls back to showing all breeds via `getBreeds()`
+
 ### Favorites Architecture
 
 Favorites are stored in a **separate `favorites` table** (not as a column on the breeds table). This design:

@@ -5,6 +5,7 @@ Android app for browsing and favoriting cat breeds, built as a challenge solutio
 ## Features
 
 - **Browse Breeds** - View a list of cat breeds with images, names, and origin
+- **Search** - Filter breeds by name with instant results (works offline)
 - **Breed Details** - See detailed information including temperament, lifespan, and description
 - **Favorites** - Mark breeds as favorites from any screen (list, detail, or favorites tab)
 - **Offline Support** - Breeds are cached locally for offline viewing

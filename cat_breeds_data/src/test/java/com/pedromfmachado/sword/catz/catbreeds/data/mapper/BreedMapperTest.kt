@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class BreedMapperTest {
-    private val mapper = BreedMapper()
+    private val mapper = BreedRemoteMapper()
 
     enum class MappingTestCase(
         val dto: BreedDto,
