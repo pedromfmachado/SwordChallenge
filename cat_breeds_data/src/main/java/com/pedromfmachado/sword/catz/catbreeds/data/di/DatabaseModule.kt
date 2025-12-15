@@ -16,28 +16,26 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideCatBreedsDatabase(@ApplicationContext context: Context): CatBreedsDatabase =
+    fun provideCatBreedsDatabase(
+        @ApplicationContext context: Context,
+    ): CatBreedsDatabase =
         Room.databaseBuilder(
             context,
             CatBreedsDatabase::class.java,
-            "cat_breeds_database"
-        ).fallbackToDestructiveMigration().build()
+            "cat_breeds_database",
+        ).fallbackToDestructiveMigration(dropAllTables = true).build()
 
     @Provides
     @Singleton
-    fun provideBreedDao(database: CatBreedsDatabase): BreedDao =
-        database.breedDao()
+    fun provideBreedDao(database: CatBreedsDatabase): BreedDao = database.breedDao()
 
     @Provides
     @Singleton
-    fun provideCacheMetadataDao(database: CatBreedsDatabase): CacheMetadataDao =
-        database.cacheMetadataDao()
+    fun provideCacheMetadataDao(database: CatBreedsDatabase): CacheMetadataDao = database.cacheMetadataDao()
 
     @Provides
     @Singleton
-    fun provideFavoriteDao(database: CatBreedsDatabase): FavoriteDao =
-        database.favoriteDao()
+    fun provideFavoriteDao(database: CatBreedsDatabase): FavoriteDao = database.favoriteDao()
 }

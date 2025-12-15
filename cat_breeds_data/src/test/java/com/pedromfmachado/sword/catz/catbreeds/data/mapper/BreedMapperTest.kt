@@ -11,7 +11,6 @@ import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
 class BreedMapperTest {
-
     private val mapper = BreedMapper()
 
     enum class MappingTestCase(
@@ -22,21 +21,21 @@ class BreedMapperTest {
         NoImage(BASE_DTO.copy(image = null), BASE_MODEL.copy(imageUrl = "")),
         SingleLifespan(
             BASE_DTO.copy(lifeSpan = "20"),
-            BASE_MODEL.copy(lifespanLow = 20, lifespanHigh = 20)
+            BASE_MODEL.copy(lifespanLow = 20, lifespanHigh = 20),
         ),
         InvalidLifespan(
             BASE_DTO.copy(lifeSpan = "unknown"),
-            BASE_MODEL.copy(lifespanLow = 0, lifespanHigh = 0)
+            BASE_MODEL.copy(lifespanLow = 0, lifespanHigh = 0),
         ),
         EmptyLifespan(
             BASE_DTO.copy(lifeSpan = ""),
-            BASE_MODEL.copy(lifespanLow = 0, lifespanHigh = 0)
-        )
+            BASE_MODEL.copy(lifespanLow = 0, lifespanHigh = 0),
+        ),
     }
 
     @Test
     fun `mapToDomain maps all fields correctly`(
-        @TestParameter testCase: MappingTestCase
+        @TestParameter testCase: MappingTestCase,
     ) {
         val breed = mapper.mapToDomain(testCase.dto)
 
@@ -63,7 +62,7 @@ class BreedMapperTest {
             temperament = "Active, Energetic",
             description = "The Abyssinian is easy to care for",
             lifeSpan = "14 - 15",
-            image = ImageDto(url = "https://example.com/cat.jpg")
+            image = ImageDto(url = "https://example.com/cat.jpg"),
         )
 
         private val BASE_MODEL = Breed(
@@ -75,7 +74,7 @@ class BreedMapperTest {
             lifespanLow = 14,
             lifespanHigh = 15,
             imageUrl = "https://example.com/cat.jpg",
-            isFavorite = false
+            isFavorite = false,
         )
     }
 }

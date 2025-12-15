@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class CacheMetadataEntity(
     @PrimaryKey val cacheKey: String,
     val lastFetchedAt: Long,
-    val expiresAt: Long
+    val expiresAt: Long,
 )

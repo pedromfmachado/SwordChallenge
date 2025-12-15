@@ -8,7 +8,6 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 
 @Dao
 interface BreedDao {
-
     @Query("SELECT * FROM breeds")
     suspend fun getAllBreeds(): List<BreedEntity>
 

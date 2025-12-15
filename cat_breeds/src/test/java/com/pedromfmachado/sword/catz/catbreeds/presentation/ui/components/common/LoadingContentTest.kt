@@ -11,7 +11,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class LoadingContentTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
@@ -16,7 +16,7 @@ import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedListV
 fun ListScreen(
     onBreedClick: (Breed) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BreedListViewModel = hiltViewModel()
+    viewModel: BreedListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -27,7 +27,7 @@ fun ListScreen(
                 breeds = state.breeds,
                 onBreedClick = onBreedClick,
                 onFavoriteClick = { breed -> viewModel.toggleFavorite(breed) },
-                modifier = modifier
+                modifier = modifier,
             )
         }
         is BreedListUiState.Error -> ErrorContent(message = state.message, modifier = modifier)

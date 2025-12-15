@@ -11,10 +11,10 @@ data class BreedDto(
     val temperament: String,
     val description: String,
     @param:Json(name = "life_span") val lifeSpan: String,
-    val image: ImageDto?
+    val image: ImageDto?,
 )
 
 @JsonClass(generateAdapter = true)
 data class ImageDto(
-    val url: String
+    val url: String,
 )

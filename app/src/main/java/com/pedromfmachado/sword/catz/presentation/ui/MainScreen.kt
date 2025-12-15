@@ -16,22 +16,22 @@ fun MainScreen() {
 
     NavHost(
         navController = rootNavController,
-        startDestination = TABS_ROUTE
+        startDestination = TABS_ROUTE,
     ) {
         composable(TABS_ROUTE) {
             TabsScreen(
                 onBreedClick = { breed ->
                     rootNavController.navigate(CatBreedsRoute.Detail.createRoute(breed.id))
-                }
+                },
             )
         }
 
         composable(
             route = CatBreedsRoute.Detail.route,
-            arguments = CatBreedsRoute.Detail.arguments
+            arguments = CatBreedsRoute.Detail.arguments,
         ) {
             DetailScreen(
-                onBackClick = { rootNavController.popBackStack() }
+                onBackClick = { rootNavController.popBackStack() },
             )
         }
     }

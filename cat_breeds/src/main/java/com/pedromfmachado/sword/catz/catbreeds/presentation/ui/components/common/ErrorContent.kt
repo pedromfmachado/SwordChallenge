@@ -13,11 +13,11 @@ import com.pedromfmachado.sword.catz.catbreeds.R
 @Composable
 fun ErrorContent(
     message: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = message ?: stringResource(R.string.error_generic))
     }

@@ -11,23 +11,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pedromfmachado.sword.catz.catbreeds.R
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.breed.BreedList
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.ErrorContent
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.components.common.LoadingContent
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesUiState
 import com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel.BreedFavoritesViewModel
+import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
 
 @Composable
 fun FavoritesScreen(
     onBreedClick: (Breed) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BreedFavoritesViewModel = hiltViewModel()
+    viewModel: BreedFavoritesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -39,7 +39,7 @@ fun FavoritesScreen(
                 averageLifespan = state.averageLifespan,
                 onBreedClick = onBreedClick,
                 onFavoriteClick = { breed -> viewModel.toggleFavorite(breed) },
-                modifier = modifier
+                modifier = modifier,
             )
         }
         is BreedFavoritesUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
@@ -52,7 +52,7 @@ private fun FavoritesScreenContent(
     averageLifespan: Int?,
     onBreedClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         if (averageLifespan != null) {
@@ -61,14 +61,14 @@ private fun FavoritesScreenContent(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
             )
         }
         BreedList(
             breeds = favoriteBreeds,
             onBreedClick = onBreedClick,
             onFavoriteClick = onFavoriteClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }
@@ -80,6 +80,6 @@ private fun FavoritesScreenPreview() {
         favoriteBreeds = PreviewData.favoriteBreeds,
         averageLifespan = 12,
         onBreedClick = {},
-        onFavoriteClick = {}
+        onFavoriteClick = {},
     )
 }

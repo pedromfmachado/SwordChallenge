@@ -12,5 +12,5 @@ data class BreedEntity(
     val temperament: String,
     val description: String,
     val lifespanLow: Int,
-    val lifespanHigh: Int
+    val lifespanHigh: Int,
 )

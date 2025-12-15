@@ -11,9 +11,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkServiceModule {
-
     @Provides
     @Singleton
-    fun provideCatApiService(retrofit: Retrofit): CatApiService =
-        retrofit.create(CatApiService::class.java)
+    fun provideCatApiService(retrofit: Retrofit): CatApiService = retrofit.create(CatApiService::class.java)
 }
