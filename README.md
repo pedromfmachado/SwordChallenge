@@ -4,10 +4,11 @@ Android app for browsing and favoriting cat breeds, built as a challenge solutio
 
 ## Features
 
-- **Browse Breeds** - View a list of cat breeds with images, names, and origin
+- **Browse Breeds** - View a paginated list of cat breeds with images, names, and origin
 - **Breed Details** - See detailed information including temperament, lifespan, and description
 - **Favorites** - Mark breeds as favorites from any screen (list, detail, or favorites tab)
 - **Offline Support** - Breeds are cached locally for offline viewing
+- **Pull-to-Refresh** - Refresh breed data on both List and Favorites screens
 - **Average Lifespan** - Favorites screen shows the average lifespan of your favorite breeds
 
 ## Running this project
@@ -47,6 +48,21 @@ Breeds are cached locally using Room with a network-first strategy:
 - **Favorites**: Stored in a separate table, persisted across cache refreshes, reactive updates via Flow
 
 The 24h TTL was chosen due to the low variability of breed data.
+
+### Pagination
+
+The List screen implements simple manual pagination (10 items per page) rather than using Paging3. This approach was chosen because:
+
+1. **Small dataset** - The Cat API contains ~67 breeds, making Paging3's complexity unnecessary
+2. **Challenge scope** - Focus on demonstrating architecture patterns over library integration
+3. **Simplicity** - Manual pagination with ViewModel state is easier to understand and maintain
+
+The API returns breeds in **alphabetical order by name**, providing consistent pagination across requests.
+
+**Implementation:**
+- `CatApiService` accepts `limit` and `page` parameters
+- `BreedListViewModel` tracks current page and triggers `loadMoreBreeds()` when scrolling near the end
+- `BreedList` composable detects scroll position and shows a loading indicator during page loads
 
 ### Reactive Favorites
 

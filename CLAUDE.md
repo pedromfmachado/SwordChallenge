@@ -77,6 +77,16 @@ MainScreen (RootNavHost)
 - **TTL**: 24 hours, chosen due to low variability of breed data.
 - **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
 
+### Pagination Strategy
+
+Simple manual pagination (10 items/page) instead of Paging3:
+- **API**: `CatApiService.getBreeds(limit, page)` - returns breeds in alphabetical order by name
+- **Repository**: `getBreeds(page, pageSize)` fetches specific page, `refreshBreeds()` forces network refresh
+- **ViewModel**: `BreedListViewModel` tracks page state, `loadMoreBreeds()` loads next page
+- **UI**: `BreedList` detects scroll near end, shows loading indicator during page loads
+
+Both screens support pull-to-refresh via Material 3's `PullToRefreshBox`.
+
 ### Favorites Architecture
 
 Favorites are stored in a **separate `favorites` table** (not as a column on the breeds table). This design:

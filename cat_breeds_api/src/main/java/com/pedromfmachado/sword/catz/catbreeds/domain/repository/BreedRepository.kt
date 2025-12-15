@@ -5,7 +5,12 @@ import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
 import kotlinx.coroutines.flow.Flow
 
 interface BreedRepository {
-    suspend fun getBreeds(): Result<List<Breed>>
+    suspend fun getBreeds(page: Int = 0, pageSize: Int = DEFAULT_PAGE_SIZE): Result<List<Breed>>
+    suspend fun refreshBreeds(pageSize: Int = DEFAULT_PAGE_SIZE): Result<List<Breed>>
+
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 10
+    }
     suspend fun getFavoriteBreeds(): Result<List<Breed>>
     fun observeFavoriteBreeds(): Flow<Result<List<Breed>>>
     fun observeFavoriteIds(): Flow<Set<String>>

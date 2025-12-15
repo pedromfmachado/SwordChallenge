@@ -26,9 +26,9 @@ internal class BreedRepositoryImpl @Inject constructor(
     private val favoriteDao: FavoriteDao
 ) : BreedRepository {
 
-    override suspend fun getBreeds(): Result<List<Breed>> {
-        // Check if cache is valid
-        if (isCacheValid()) {
+    override suspend fun getBreeds(page: Int, pageSize: Int): Result<List<Breed>> {
+        // For page 0, check cache validity first
+        if (page == 0 && isCacheValid()) {
             val cachedBreeds = breedDao.getAllBreeds()
             if (cachedBreeds.isNotEmpty()) {
                 return Result.Success(mergeFavoriteStatus(entityMapper.mapToDomain(cachedBreeds)))
@@ -37,18 +37,39 @@ internal class BreedRepositoryImpl @Inject constructor(
 
         // Try network
         return try {
-            val response = apiService.getBreeds()
+            val response = apiService.getBreeds(limit = pageSize, page = page)
+            val breeds = mapper.mapToDomain(response)
+
+            if (page == 0) {
+                // First page: replace cache entirely
+                cacheBreeds(breeds)
+            } else {
+                // Subsequent pages: append to cache
+                appendToCache(breeds)
+            }
+
+            Result.Success(mergeFavoriteStatus(breeds))
+        } catch (e: Exception) {
+            // Network failed, try returning stale cache (only meaningful for page 0)
+            if (page == 0) {
+                val cachedBreeds = breedDao.getAllBreeds()
+                if (cachedBreeds.isNotEmpty()) {
+                    return Result.Success(mergeFavoriteStatus(entityMapper.mapToDomain(cachedBreeds)))
+                }
+            }
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun refreshBreeds(pageSize: Int): Result<List<Breed>> {
+        // Force network fetch, ignoring cache
+        return try {
+            val response = apiService.getBreeds(limit = pageSize, page = 0)
             val breeds = mapper.mapToDomain(response)
             cacheBreeds(breeds)
             Result.Success(mergeFavoriteStatus(breeds))
         } catch (e: Exception) {
-            // Network failed, try returning stale cache
-            val cachedBreeds = breedDao.getAllBreeds()
-            if (cachedBreeds.isNotEmpty()) {
-                Result.Success(mergeFavoriteStatus(entityMapper.mapToDomain(cachedBreeds)))
-            } else {
-                Result.Error(e)
-            }
+            Result.Error(e)
         }
     }
 
@@ -145,5 +166,10 @@ internal class BreedRepositoryImpl @Inject constructor(
                 expiresAt = currentTime + CacheConfig.CACHE_TTL_MS
             )
         )
+    }
+
+    private suspend fun appendToCache(breeds: List<Breed>) {
+        // Insert or replace breeds (Room handles conflicts via OnConflictStrategy)
+        breedDao.insertBreeds(entityMapper.mapToEntities(breeds))
     }
 }

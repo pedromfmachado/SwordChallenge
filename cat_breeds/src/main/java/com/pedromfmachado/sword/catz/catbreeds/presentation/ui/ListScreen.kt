@@ -27,7 +27,12 @@ fun ListScreen(
                 breeds = state.breeds,
                 onBreedClick = onBreedClick,
                 onFavoriteClick = { breed -> viewModel.toggleFavorite(breed) },
-                modifier = modifier
+                modifier = modifier,
+                isRefreshing = state.isRefreshing,
+                isLoadingMore = state.isLoadingMore,
+                hasMorePages = state.hasMorePages,
+                onRefresh = { viewModel.refresh() },
+                onLoadMore = { viewModel.loadMoreBreeds() }
             )
         }
         is BreedListUiState.Error -> ErrorContent(message = state.message, modifier = modifier)

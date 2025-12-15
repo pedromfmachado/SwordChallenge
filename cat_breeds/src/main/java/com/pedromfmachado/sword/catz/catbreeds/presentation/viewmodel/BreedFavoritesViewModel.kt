@@ -7,9 +7,10 @@ import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
 import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,22 +21,36 @@ class BreedFavoritesViewModel @Inject constructor(
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
-    val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
-        .map { result ->
-            when (result) {
-                is Result.Success -> {
-                    val breeds = result.data
-                    val averageLifespan = calculateAverageLifespan(breeds)
-                    BreedFavoritesUiState.Success(breeds, averageLifespan)
-                }
-                is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
+    private val _isRefreshing = MutableStateFlow(false)
+
+    val uiState: StateFlow<BreedFavoritesUiState> = combine(
+        breedRepository.observeFavoriteBreeds(),
+        _isRefreshing
+    ) { result, isRefreshing ->
+        when (result) {
+            is Result.Success -> {
+                val breeds = result.data
+                val averageLifespan = calculateAverageLifespan(breeds)
+                BreedFavoritesUiState.Success(breeds, averageLifespan, isRefreshing)
             }
+            is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = BreedFavoritesUiState.Loading
-        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = BreedFavoritesUiState.Loading
+    )
+
+    fun refresh() {
+        if (_isRefreshing.value) return
+
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            // Refresh breed data from network (updates cached breeds)
+            breedRepository.refreshBreeds()
+            _isRefreshing.value = false
+        }
+    }
 
     fun toggleFavorite(breed: Breed) {
         viewModelScope.launch {
@@ -54,6 +69,10 @@ class BreedFavoritesViewModel @Inject constructor(
 
 sealed class BreedFavoritesUiState {
     data object Loading : BreedFavoritesUiState()
-    data class Success(val breeds: List<Breed>, val averageLifespan: Int?) : BreedFavoritesUiState()
+    data class Success(
+        val breeds: List<Breed>,
+        val averageLifespan: Int?,
+        val isRefreshing: Boolean = false
+    ) : BreedFavoritesUiState()
     data class Error(val message: String?) : BreedFavoritesUiState()
 }

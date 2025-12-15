@@ -9,8 +9,13 @@ interface CatApiService {
 
     @GET("breeds")
     suspend fun getBreeds(
-        @Query("limit") limit: Int = 100
+        @Query("limit") limit: Int = DEFAULT_PAGE_SIZE,
+        @Query("page") page: Int = 0
     ): List<BreedDto>
+
+    companion object {
+        const val DEFAULT_PAGE_SIZE = 10
+    }
 
     @GET("breeds/{id}")
     suspend fun getBreedById(

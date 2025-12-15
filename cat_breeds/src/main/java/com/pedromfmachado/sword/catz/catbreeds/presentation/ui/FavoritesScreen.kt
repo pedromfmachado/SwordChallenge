@@ -39,7 +39,9 @@ fun FavoritesScreen(
                 averageLifespan = state.averageLifespan,
                 onBreedClick = onBreedClick,
                 onFavoriteClick = { breed -> viewModel.toggleFavorite(breed) },
-                modifier = modifier
+                modifier = modifier,
+                isRefreshing = state.isRefreshing,
+                onRefresh = { viewModel.refresh() }
             )
         }
         is BreedFavoritesUiState.Error -> ErrorContent(message = state.message, modifier = modifier)
@@ -52,7 +54,9 @@ private fun FavoritesScreenContent(
     averageLifespan: Int?,
     onBreedClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean = false,
+    onRefresh: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         if (averageLifespan != null) {
@@ -68,7 +72,9 @@ private fun FavoritesScreenContent(
             breeds = favoriteBreeds,
             onBreedClick = onBreedClick,
             onFavoriteClick = onFavoriteClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh
         )
     }
 }
