@@ -30,30 +30,30 @@ import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.FavoritesScreen
 import com.pedromfmachado.sword.catz.catbreeds.presentation.ui.ListScreen
 
 private sealed class BottomNavItem(
-    @StringRes val titleResId: Int,
+    @param:StringRes val titleResId: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val route: String
+    val route: String,
 ) {
     data object List : BottomNavItem(
         titleResId = R.string.nav_list_label,
         selectedIcon = Icons.AutoMirrored.Filled.List,
         unselectedIcon = Icons.AutoMirrored.Outlined.List,
-        route = CatBreedsRoute.List.route
+        route = CatBreedsRoute.List.route,
     )
 
     data object Favorites : BottomNavItem(
         titleResId = R.string.nav_favorites_label,
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder,
-        route = CatBreedsRoute.Favorites.route
+        route = CatBreedsRoute.Favorites.route,
     )
 }
 
 @Composable
 fun TabsScreen(
     onBreedClick: (Breed) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val tabsNavController = rememberNavController()
     val navItems = listOf(BottomNavItem.List, BottomNavItem.Favorites)
@@ -83,20 +83,20 @@ fun TabsScreen(
                         icon = {
                             Icon(
                                 imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = stringResource(item.titleResId)
+                                contentDescription = stringResource(item.titleResId),
                             )
                         },
-                        label = { Text(text = stringResource(item.titleResId)) }
+                        label = { Text(text = stringResource(item.titleResId)) },
                     )
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier,
     ) { innerPadding ->
         NavHost(
             navController = tabsNavController,
             startDestination = CatBreedsRoute.List.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         ) {
             composable(CatBreedsRoute.List.route) {
                 ListScreen(onBreedClick = onBreedClick)

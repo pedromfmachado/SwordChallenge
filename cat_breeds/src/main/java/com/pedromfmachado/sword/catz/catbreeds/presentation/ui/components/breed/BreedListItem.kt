@@ -39,7 +39,7 @@ fun BreedListItem(
     breed: Breed,
     onClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val favoriteContentDescription = if (breed.isFavorite) {
         stringResource(R.string.a11y_breed_favorite_remove, breed.name)
@@ -52,14 +52,14 @@ fun BreedListItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             AsyncImage(
                 model = breed.imageUrl,
@@ -67,20 +67,20 @@ fun BreedListItem(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
 
             Text(
                 text = breed.name,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
 
             IconButton(
                 onClick = { onFavoriteClick(breed) },
                 modifier = Modifier.semantics {
                     contentDescription = favoriteContentDescription
-                }
+                },
             ) {
                 Icon(
                     imageVector = if (breed.isFavorite) {
@@ -93,7 +93,7 @@ fun BreedListItem(
                         FavoriteActiveColor
                     } else {
                         FavoriteInactiveColor
-                    }
+                    },
                 )
             }
         }
@@ -106,7 +106,7 @@ internal fun BreedListItemPreview() {
     BreedListItem(
         breed = PreviewData.persianBreed,
         onClick = {},
-        onFavoriteClick = {}
+        onFavoriteClick = {},
     )
 }
 
@@ -116,6 +116,6 @@ internal fun BreedListItemFavoritePreview() {
     BreedListItem(
         breed = PreviewData.maineCoonBreed,
         onClick = {},
-        onFavoriteClick = {}
+        onFavoriteClick = {},
     )
 }

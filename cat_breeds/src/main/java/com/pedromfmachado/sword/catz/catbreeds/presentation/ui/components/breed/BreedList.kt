@@ -23,31 +23,31 @@ fun BreedList(
     onBreedClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     if (breeds.isEmpty()) {
         Box(
             modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = stringResource(R.string.breed_empty_message),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     } else {
         LazyColumn(
             modifier = modifier.fillMaxSize(),
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
         ) {
             items(
                 items = breeds,
-                key = { breed -> breed.id }
+                key = { breed -> breed.id },
             ) { breed ->
                 BreedListItem(
                     breed = breed,
                     onClick = onBreedClick,
-                    onFavoriteClick = onFavoriteClick
+                    onFavoriteClick = onFavoriteClick,
                 )
             }
         }
@@ -60,7 +60,7 @@ internal fun BreedListPreview() {
     BreedList(
         breeds = PreviewData.breeds,
         onBreedClick = {},
-        onFavoriteClick = {}
+        onFavoriteClick = {},
     )
 }
 
@@ -70,6 +70,6 @@ internal fun BreedListEmptyPreview() {
     BreedList(
         breeds = emptyList(),
         onBreedClick = {},
-        onFavoriteClick = {}
+        onFavoriteClick = {},
     )
 }

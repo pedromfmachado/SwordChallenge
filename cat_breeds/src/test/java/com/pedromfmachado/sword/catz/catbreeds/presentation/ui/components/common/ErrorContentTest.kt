@@ -10,7 +10,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class ErrorContentTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

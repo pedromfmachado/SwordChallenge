@@ -12,10 +12,12 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
 @Database(
     entities = [BreedEntity::class, CacheMetadataEntity::class, FavoriteEntity::class],
     version = 2,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class CatBreedsDatabase : RoomDatabase() {
     abstract fun breedDao(): BreedDao
+
     abstract fun cacheMetadataDao(): CacheMetadataDao
+
     abstract fun favoriteDao(): FavoriteDao
 }

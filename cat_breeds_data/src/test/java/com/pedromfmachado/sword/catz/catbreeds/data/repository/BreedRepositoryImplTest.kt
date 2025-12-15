@@ -28,7 +28,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class BreedRepositoryImplTest {
-
     private val apiService = mock<CatApiService> {
         onBlocking { getBreeds() } doReturn listOf(BASE_DTO)
     }
@@ -57,185 +56,201 @@ class BreedRepositoryImplTest {
         breedDao,
         cacheMetadataDao,
         entityMapper,
-        favoriteDao
+        favoriteDao,
     )
 
     @Test
-    fun `getBreeds fetches from network when cache is invalid`() = runTest {
-        val result = repository.getBreeds()
+    fun `getBreeds fetches from network when cache is invalid`() =
+        runTest {
+            val result = repository.getBreeds()
 
-        assertTrue(result is Result.Success)
-        assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
-        verify(apiService).getBreeds()
-    }
-
-    @Test
-    fun `getBreeds returns cached data when cache is valid`() = runTest {
-        val validMetadata = CacheMetadataEntity(
-            cacheKey = CacheConfig.BREEDS_CACHE_KEY,
-            lastFetchedAt = System.currentTimeMillis(),
-            expiresAt = System.currentTimeMillis() + CacheConfig.CACHE_TTL_MS
-        )
-        whenever(cacheMetadataDao.getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY)).thenReturn(validMetadata)
-        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
-
-        val result = repository.getBreeds()
-
-        assertTrue(result is Result.Success)
-        assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
-        verify(apiService, never()).getBreeds()
-    }
+            assertTrue(result is Result.Success)
+            assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
+            verify(apiService).getBreeds()
+        }
 
     @Test
-    fun `getBreeds returns stale cache when network fails`() = runTest {
-        val exception = RuntimeException("Network error")
-        whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
-        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+    fun `getBreeds returns cached data when cache is valid`() =
+        runTest {
+            val validMetadata = CacheMetadataEntity(
+                cacheKey = CacheConfig.BREEDS_CACHE_KEY,
+                lastFetchedAt = System.currentTimeMillis(),
+                expiresAt = System.currentTimeMillis() + CacheConfig.CACHE_TTL_MS,
+            )
+            whenever(cacheMetadataDao.getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY)).thenReturn(validMetadata)
+            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
-        val result = repository.getBreeds()
+            val result = repository.getBreeds()
 
-        assertTrue(result is Result.Success)
-        assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
-    }
-
-    @Test
-    fun `getBreeds returns Error when network fails and cache is empty`() = runTest {
-        val exception = RuntimeException("Network error")
-        whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
-        whenever(breedDao.getAllBreeds()).thenReturn(emptyList())
-
-        val result = repository.getBreeds()
-
-        assertTrue(result is Result.Error)
-        assertEquals(exception, (result as Result.Error).exception)
-    }
+            assertTrue(result is Result.Success)
+            assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
+            verify(apiService, never()).getBreeds()
+        }
 
     @Test
-    fun `getBreedById returns cached breed when available`() = runTest {
-        whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
+    fun `getBreeds returns stale cache when network fails`() =
+        runTest {
+            val exception = RuntimeException("Network error")
+            whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
+            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
-        val result = repository.getBreedById("abys")
+            val result = repository.getBreeds()
 
-        assertTrue(result is Result.Success)
-        assertEquals(BASE_MODEL, (result as Result.Success).data)
-    }
-
-    @Test
-    fun `getBreedById returns Error when breed not cached`() = runTest {
-        whenever(breedDao.getBreedById("abys")).thenReturn(null)
-
-        val result = repository.getBreedById("abys")
-
-        assertTrue(result is Result.Error)
-        assertTrue((result as Result.Error).exception is NoSuchElementException)
-    }
+            assertTrue(result is Result.Success)
+            assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
+        }
 
     @Test
-    fun `getFavoriteBreeds returns Success with empty list when no favorites`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(emptyList()))
-        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+    fun `getBreeds returns Error when network fails and cache is empty`() =
+        runTest {
+            val exception = RuntimeException("Network error")
+            whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
+            whenever(breedDao.getAllBreeds()).thenReturn(emptyList())
 
-        val result = repository.getFavoriteBreeds()
+            val result = repository.getBreeds()
 
-        assertTrue(result is Result.Success)
-        assertEquals(emptyList<Breed>(), (result as Result.Success).data)
-    }
-
-    @Test
-    fun `getFavoriteBreeds returns favorite breeds with isFavorite true`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
-        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
-
-        val result = repository.getFavoriteBreeds()
-
-        assertTrue(result is Result.Success)
-        val favorites = (result as Result.Success).data
-        assertEquals(1, favorites.size)
-        assertEquals("abys", favorites[0].id)
-        assertTrue(favorites[0].isFavorite)
-    }
+            assertTrue(result is Result.Error)
+            assertEquals(exception, (result as Result.Error).exception)
+        }
 
     @Test
-    fun `addFavorite adds breed to favorites`() = runTest {
-        val result = repository.addFavorite("abys")
+    fun `getBreedById returns cached breed when available`() =
+        runTest {
+            whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
 
-        assertTrue(result is Result.Success)
-        verify(favoriteDao).addFavorite(FavoriteEntity("abys"))
-    }
+            val result = repository.getBreedById("abys")
 
-    @Test
-    fun `removeFavorite removes breed from favorites`() = runTest {
-        val result = repository.removeFavorite("abys")
-
-        assertTrue(result is Result.Success)
-        verify(favoriteDao).removeFavorite("abys")
-    }
+            assertTrue(result is Result.Success)
+            assertEquals(BASE_MODEL, (result as Result.Success).data)
+        }
 
     @Test
-    fun `isFavorite returns true when breed is favorited`() = runTest {
-        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+    fun `getBreedById returns Error when breed not cached`() =
+        runTest {
+            whenever(breedDao.getBreedById("abys")).thenReturn(null)
 
-        val result = repository.isFavorite("abys")
+            val result = repository.getBreedById("abys")
 
-        assertTrue(result is Result.Success)
-        assertTrue((result as Result.Success).data)
-    }
-
-    @Test
-    fun `isFavorite returns false when breed is not favorited`() = runTest {
-        whenever(favoriteDao.isFavorite("abys")).thenReturn(false)
-
-        val result = repository.isFavorite("abys")
-
-        assertTrue(result is Result.Success)
-        assertEquals(false, (result as Result.Success).data)
-    }
+            assertTrue(result is Result.Error)
+            assertTrue((result as Result.Error).exception is NoSuchElementException)
+        }
 
     @Test
-    fun `getBreeds merges favorite status from favorites table`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
+    fun `getFavoriteBreeds returns Success with empty list when no favorites`() =
+        runTest {
+            whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(emptyList()))
+            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
-        val result = repository.getBreeds()
+            val result = repository.getFavoriteBreeds()
 
-        assertTrue(result is Result.Success)
-        val breeds = (result as Result.Success).data
-        assertEquals(1, breeds.size)
-        assertTrue(breeds[0].isFavorite)
-    }
-
-    @Test
-    fun `observeFavoriteBreeds emits favorite breeds with isFavorite true`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
-        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
-
-        val result = repository.observeFavoriteBreeds().first()
-
-        assertTrue(result is Result.Success)
-        val favorites = (result as Result.Success).data
-        assertEquals(1, favorites.size)
-        assertEquals("abys", favorites[0].id)
-        assertTrue(favorites[0].isFavorite)
-    }
+            assertTrue(result is Result.Success)
+            assertEquals(emptyList<Breed>(), (result as Result.Success).data)
+        }
 
     @Test
-    fun `observeFavoriteIds emits set of favorite IDs`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys", "beng")))
+    fun `getFavoriteBreeds returns favorite breeds with isFavorite true`() =
+        runTest {
+            whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
+            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
-        val result = repository.observeFavoriteIds().first()
+            val result = repository.getFavoriteBreeds()
 
-        assertEquals(setOf("abys", "beng"), result)
-    }
+            assertTrue(result is Result.Success)
+            val favorites = (result as Result.Success).data
+            assertEquals(1, favorites.size)
+            assertEquals("abys", favorites[0].id)
+            assertTrue(favorites[0].isFavorite)
+        }
 
     @Test
-    fun `getBreedById returns breed with correct favorite status`() = runTest {
-        whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
-        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+    fun `addFavorite adds breed to favorites`() =
+        runTest {
+            val result = repository.addFavorite("abys")
 
-        val result = repository.getBreedById("abys")
+            assertTrue(result is Result.Success)
+            verify(favoriteDao).addFavorite(FavoriteEntity("abys"))
+        }
 
-        assertTrue(result is Result.Success)
-        assertTrue((result as Result.Success).data.isFavorite)
-    }
+    @Test
+    fun `removeFavorite removes breed from favorites`() =
+        runTest {
+            val result = repository.removeFavorite("abys")
+
+            assertTrue(result is Result.Success)
+            verify(favoriteDao).removeFavorite("abys")
+        }
+
+    @Test
+    fun `isFavorite returns true when breed is favorited`() =
+        runTest {
+            whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+
+            val result = repository.isFavorite("abys")
+
+            assertTrue(result is Result.Success)
+            assertTrue((result as Result.Success).data)
+        }
+
+    @Test
+    fun `isFavorite returns false when breed is not favorited`() =
+        runTest {
+            whenever(favoriteDao.isFavorite("abys")).thenReturn(false)
+
+            val result = repository.isFavorite("abys")
+
+            assertTrue(result is Result.Success)
+            assertEquals(false, (result as Result.Success).data)
+        }
+
+    @Test
+    fun `getBreeds merges favorite status from favorites table`() =
+        runTest {
+            whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
+
+            val result = repository.getBreeds()
+
+            assertTrue(result is Result.Success)
+            val breeds = (result as Result.Success).data
+            assertEquals(1, breeds.size)
+            assertTrue(breeds[0].isFavorite)
+        }
+
+    @Test
+    fun `observeFavoriteBreeds emits favorite breeds with isFavorite true`() =
+        runTest {
+            whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
+            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+
+            val result = repository.observeFavoriteBreeds().first()
+
+            assertTrue(result is Result.Success)
+            val favorites = (result as Result.Success).data
+            assertEquals(1, favorites.size)
+            assertEquals("abys", favorites[0].id)
+            assertTrue(favorites[0].isFavorite)
+        }
+
+    @Test
+    fun `observeFavoriteIds emits set of favorite IDs`() =
+        runTest {
+            whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys", "beng")))
+
+            val result = repository.observeFavoriteIds().first()
+
+            assertEquals(setOf("abys", "beng"), result)
+        }
+
+    @Test
+    fun `getBreedById returns breed with correct favorite status`() =
+        runTest {
+            whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
+            whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+
+            val result = repository.getBreedById("abys")
+
+            assertTrue(result is Result.Success)
+            assertTrue((result as Result.Success).data.isFavorite)
+        }
 
     companion object {
         private val BASE_DTO = BreedDto(
@@ -245,7 +260,7 @@ class BreedRepositoryImplTest {
             temperament = "Active, Energetic",
             description = "The Abyssinian is easy to care for",
             lifeSpan = "14 - 15",
-            image = ImageDto(url = "https://example.com/cat.jpg")
+            image = ImageDto(url = "https://example.com/cat.jpg"),
         )
 
         private val BASE_MODEL = Breed(
@@ -257,7 +272,7 @@ class BreedRepositoryImplTest {
             lifespanLow = 14,
             lifespanHigh = 15,
             imageUrl = "https://example.com/cat.jpg",
-            isFavorite = false
+            isFavorite = false,
         )
 
         private val BASE_ENTITY = BreedEntity(
@@ -268,7 +283,7 @@ class BreedRepositoryImplTest {
             description = "The Abyssinian is easy to care for",
             lifespanLow = 14,
             lifespanHigh = 15,
-            imageUrl = "https://example.com/cat.jpg"
+            imageUrl = "https://example.com/cat.jpg",
         )
     }
 }

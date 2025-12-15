@@ -16,55 +16,58 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BreedListViewModel @Inject constructor(
-    private val breedRepository: BreedRepository,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
-) : ViewModel() {
+class BreedListViewModel
+    @Inject
+    constructor(
+        private val breedRepository: BreedRepository,
+        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow<BreedListUiState>(BreedListUiState.Loading)
+        val uiState: StateFlow<BreedListUiState> = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<BreedListUiState>(BreedListUiState.Loading)
-    val uiState: StateFlow<BreedListUiState> = _uiState.asStateFlow()
-
-    init {
-        loadBreeds()
-        observeFavoriteIds()
-    }
-
-    private fun observeFavoriteIds() {
-        breedRepository.observeFavoriteIds()
-            .onEach { favoriteIds -> updateFavoriteStatus(favoriteIds) }
-            .launchIn(viewModelScope)
-    }
-
-    private fun updateFavoriteStatus(favoriteIds: Set<String>) {
-        val currentState = _uiState.value
-        if (currentState is BreedListUiState.Success) {
-            val updatedBreeds = currentState.breeds.map { breed ->
-                breed.copy(isFavorite = breed.id in favoriteIds)
-            }
-            _uiState.value = BreedListUiState.Success(updatedBreeds)
+        init {
+            loadBreeds()
+            observeFavoriteIds()
         }
-    }
 
-    fun loadBreeds() {
-        viewModelScope.launch {
-            _uiState.value = BreedListUiState.Loading
-            when (val result = breedRepository.getBreeds()) {
-                is Result.Success -> _uiState.value = BreedListUiState.Success(result.data)
-                is Result.Error -> _uiState.value = BreedListUiState.Error(result.exception.message)
+        private fun observeFavoriteIds() {
+            breedRepository.observeFavoriteIds()
+                .onEach { favoriteIds -> updateFavoriteStatus(favoriteIds) }
+                .launchIn(viewModelScope)
+        }
+
+        private fun updateFavoriteStatus(favoriteIds: Set<String>) {
+            val currentState = _uiState.value
+            if (currentState is BreedListUiState.Success) {
+                val updatedBreeds = currentState.breeds.map { breed ->
+                    breed.copy(isFavorite = breed.id in favoriteIds)
+                }
+                _uiState.value = BreedListUiState.Success(updatedBreeds)
             }
         }
-    }
 
-    fun toggleFavorite(breed: Breed) {
-        viewModelScope.launch {
-            toggleFavoriteUseCase(breed.id, breed.isFavorite)
-            // No need to manually update state - observeFavoriteIds will handle it
+        fun loadBreeds() {
+            viewModelScope.launch {
+                _uiState.value = BreedListUiState.Loading
+                when (val result = breedRepository.getBreeds()) {
+                    is Result.Success -> _uiState.value = BreedListUiState.Success(result.data)
+                    is Result.Error -> _uiState.value = BreedListUiState.Error(result.exception.message)
+                }
+            }
+        }
+
+        fun toggleFavorite(breed: Breed) {
+            viewModelScope.launch {
+                toggleFavoriteUseCase(breed.id, breed.isFavorite)
+                // No need to manually update state - observeFavoriteIds will handle it
+            }
         }
     }
-}
 
 sealed class BreedListUiState {
     data object Loading : BreedListUiState()
+
     data class Success(val breeds: List<Breed>) : BreedListUiState()
+
     data class Error(val message: String?) : BreedListUiState()
 }

@@ -20,7 +20,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class BreedListTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -30,7 +29,7 @@ class BreedListTest {
             BreedList(
                 breeds = emptyList(),
                 onBreedClick = {},
-                onFavoriteClick = {}
+                onFavoriteClick = {},
             )
         }
 
@@ -45,7 +44,7 @@ class BreedListTest {
             BreedList(
                 breeds = breeds,
                 onBreedClick = {},
-                onFavoriteClick = {}
+                onFavoriteClick = {},
             )
         }
 
@@ -62,7 +61,7 @@ class BreedListTest {
             BreedList(
                 breeds = breeds,
                 onBreedClick = {},
-                onFavoriteClick = {}
+                onFavoriteClick = {},
             )
         }
 
@@ -78,7 +77,7 @@ class BreedListTest {
             BreedList(
                 breeds = breeds,
                 onBreedClick = onBreedClick,
-                onFavoriteClick = {}
+                onFavoriteClick = {},
             )
         }
 
@@ -100,7 +99,7 @@ class BreedListTest {
             BreedList(
                 breeds = breeds,
                 onBreedClick = {},
-                onFavoriteClick = onFavoriteClick
+                onFavoriteClick = onFavoriteClick,
             )
         }
 

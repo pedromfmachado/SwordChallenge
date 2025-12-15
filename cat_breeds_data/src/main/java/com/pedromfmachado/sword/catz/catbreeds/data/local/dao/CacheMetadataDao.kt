@@ -8,7 +8,6 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.CacheMetadataEn
 
 @Dao
 interface CacheMetadataDao {
-
     @Query("SELECT * FROM cache_metadata WHERE cacheKey = :key")
     suspend fun getCacheMetadata(key: String): CacheMetadataEntity?
 

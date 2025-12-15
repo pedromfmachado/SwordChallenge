@@ -5,7 +5,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 
 class LoadingContentScreenshotTest {
-
     @PreviewTest
     @Preview(showBackground = true)
     @Composable

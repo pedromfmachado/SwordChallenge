@@ -5,6 +5,7 @@ Android app for browsing and favoriting cats.
 ## Tech Stack
 
 - **Kotlin** 2.2.21 with KSP
+- **Java** 21 (latest LTS)
 - **Jetpack Compose** (Material 3, BOM 2025.12.00)
 - **Hilt** 2.57.2 (DI)
 - **Navigation Compose** 2.9.6
@@ -53,7 +54,7 @@ cat_breeds_data    cat_breeds
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
-  - `presentation/navigation/` - CatBreedsRoutes (List, Favorites, Detail)
+  - `presentation/navigation/` - CatBreedsRoute (List, Favorites, Detail)
   - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
   - `presentation/ui/components/breed/` - BreedList, BreedListItem
   - `presentation/ui/components/common/` - LoadingContent, ErrorContent
@@ -108,9 +109,20 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 ./gradlew updateDebugScreenshotTest               # Update screenshot references (all modules)
 ./gradlew :module:updateDebugScreenshotTest       # Update screenshot references (specific module)
 
+# Code style
+./gradlew ktlintCheck                             # Check code style
+./gradlew ktlintFormat                            # Auto-fix style issues
+
 # Lint
 ./gradlew lint
 ```
+
+## Code Style
+
+- **ktlint** enforces Kotlin code style (official Kotlin style guide)
+- Configuration in `.editorconfig`
+- CI runs both `ktlintCheck` and Android `lint` on PRs and main
+- **Before committing**: Run `./gradlew ktlintCheck` and fix any issues with `./gradlew ktlintFormat`
 
 ## Testing
 
@@ -157,5 +169,5 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
 - `cat_breeds/src/main/java/.../domain/usecase/ToggleFavoriteUseCase.kt` - Toggle favorite business logic
-- `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
+- `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoute.kt` - Navigation routes
 - `cat_breeds/src/main/java/.../presentation/ui/components/common/` - Shared UI components

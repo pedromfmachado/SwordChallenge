@@ -9,5 +9,5 @@ data class Breed(
     val description: String,
     val lifespanLow: Int,
     val lifespanHigh: Int,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
 )

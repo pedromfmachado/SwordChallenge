@@ -15,45 +15,48 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BreedFavoritesViewModel @Inject constructor(
-    private val breedRepository: BreedRepository,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
-) : ViewModel() {
-
-    val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
-        .map { result ->
-            when (result) {
-                is Result.Success -> {
-                    val breeds = result.data
-                    val averageLifespan = calculateAverageLifespan(breeds)
-                    BreedFavoritesUiState.Success(breeds, averageLifespan)
+class BreedFavoritesViewModel
+    @Inject
+    constructor(
+        private val breedRepository: BreedRepository,
+        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    ) : ViewModel() {
+        val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
+            .map { result ->
+                when (result) {
+                    is Result.Success -> {
+                        val breeds = result.data
+                        val averageLifespan = calculateAverageLifespan(breeds)
+                        BreedFavoritesUiState.Success(breeds, averageLifespan)
+                    }
+                    is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
                 }
-                is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = BreedFavoritesUiState.Loading,
+            )
+
+        fun toggleFavorite(breed: Breed) {
+            viewModelScope.launch {
+                toggleFavoriteUseCase(breed.id, breed.isFavorite)
+                // No need to manually update state - the Flow will emit automatically
             }
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = BreedFavoritesUiState.Loading
-        )
 
-    fun toggleFavorite(breed: Breed) {
-        viewModelScope.launch {
-            toggleFavoriteUseCase(breed.id, breed.isFavorite)
-            // No need to manually update state - the Flow will emit automatically
+        private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
+            return breeds.takeIf { it.isNotEmpty() }
+                ?.map { (it.lifespanLow + it.lifespanHigh) / 2.0 }
+                ?.average()
+                ?.toInt()
         }
     }
-
-    private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
-        return breeds.takeIf { it.isNotEmpty() }
-            ?.map { (it.lifespanLow + it.lifespanHigh) / 2.0 }
-            ?.average()
-            ?.toInt()
-    }
-}
 
 sealed class BreedFavoritesUiState {
     data object Loading : BreedFavoritesUiState()
+
     data class Success(val breeds: List<Breed>, val averageLifespan: Int?) : BreedFavoritesUiState()
+
     data class Error(val message: String?) : BreedFavoritesUiState()
 }

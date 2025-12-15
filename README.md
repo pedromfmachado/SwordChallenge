@@ -28,6 +28,7 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch cat breed data.
 ## Tech Stack
 
 - **Kotlin** with Coroutines
+- **Java** 21 (latest LTS)
 - **Jetpack Compose** (Material 3)
 - **Hilt** for dependency injection
 - **Retrofit** + **Moshi** for networking
@@ -75,7 +76,20 @@ Both List and Favorites screens observe Room Flows, so changes made from any scr
 - **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
+## Code Style
+
+ktlint enforces the official Kotlin style guide.
+
+```bash
+# Check code style
+./gradlew ktlintCheck
+
+# Auto-fix style issues
+./gradlew ktlintFormat
+```
+
 ## CI
 
-GitHub Actions workflows run on pull requests:
+GitHub Actions workflows run on pull requests and main:
 - **Unit Tests** - Runs all unit tests
+- **Code Quality** - Runs ktlint and Android lint
