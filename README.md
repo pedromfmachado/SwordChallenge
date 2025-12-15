@@ -94,3 +94,19 @@ ktlint enforces the official Kotlin style guide.
 GitHub Actions workflows run on pull requests and main:
 - **Unit Tests** - Runs all unit tests
 - **Code Quality** - Runs ktlint and Android lint
+
+## AI-Assisted Development
+
+This project showcases AI-assisted development using [Claude Code](https://claude.com/claude-code).
+
+### Challenge Evaluator Skill
+
+A custom Claude Code skill was created to evaluate coding challenge submissions. Located in `.claude/skills/catz-challenge-evaluator/`, it provides:
+
+- **Systematic evaluation** against challenge requirements
+- **Seniority assessment** (Junior/Mid/Senior/Staff) with confidence rating
+- **18 interview questions** for technical screening
+- **AI-detection probes** to verify code ownership
+- **Scoring rubric** for consistent evaluation
+
+To run an evaluation, ask Claude Code: *"evaluate this challenge using the catz-challenge-evaluator skill"*
