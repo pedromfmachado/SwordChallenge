@@ -14,6 +14,8 @@ import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedEntityMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedMapper
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -46,7 +48,7 @@ class BreedRepositoryImplTest {
         on { mapToDomain(BASE_ENTITY) } doReturn BASE_MODEL
     }
     private val favoriteDao = mock<FavoriteDao> {
-        onBlocking { getAllFavoriteIds() } doReturn emptyList()
+        on { getAllFavoriteIds() } doReturn flowOf(emptyList())
         onBlocking { isFavorite("abys") } doReturn false
     }
     private val repository = BreedRepositoryImpl(
@@ -130,7 +132,7 @@ class BreedRepositoryImplTest {
 
     @Test
     fun `getFavoriteBreeds returns Success with empty list when no favorites`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(emptyList())
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(emptyList()))
         whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
         val result = repository.getFavoriteBreeds()
@@ -141,7 +143,7 @@ class BreedRepositoryImplTest {
 
     @Test
     fun `getFavoriteBreeds returns favorite breeds with isFavorite true`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(listOf("abys"))
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
         whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
 
         val result = repository.getFavoriteBreeds()
@@ -191,7 +193,7 @@ class BreedRepositoryImplTest {
 
     @Test
     fun `getBreeds merges favorite status from favorites table`() = runTest {
-        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(listOf("abys"))
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
 
         val result = repository.getBreeds()
 
@@ -199,6 +201,20 @@ class BreedRepositoryImplTest {
         val breeds = (result as Result.Success).data
         assertEquals(1, breeds.size)
         assertTrue(breeds[0].isFavorite)
+    }
+
+    @Test
+    fun `observeFavoriteBreeds emits favorite breeds with isFavorite true`() = runTest {
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
+        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+
+        val result = repository.observeFavoriteBreeds().first()
+
+        assertTrue(result is Result.Success)
+        val favorites = (result as Result.Success).data
+        assertEquals(1, favorites.size)
+        assertEquals("abys", favorites[0].id)
+        assertTrue(favorites[0].isFavorite)
     }
 
     @Test

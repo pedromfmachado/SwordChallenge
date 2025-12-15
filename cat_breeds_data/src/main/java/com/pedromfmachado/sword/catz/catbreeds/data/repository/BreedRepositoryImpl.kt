@@ -12,6 +12,9 @@ import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedMapper
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class BreedRepositoryImpl @Inject constructor(
@@ -62,7 +65,7 @@ internal class BreedRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoriteBreeds(): Result<List<Breed>> {
         return try {
-            val favoriteIds = favoriteDao.getAllFavoriteIds().toSet()
+            val favoriteIds = favoriteDao.getAllFavoriteIds().first().toSet()
             val allBreeds = breedDao.getAllBreeds()
             val favorites = allBreeds
                 .filter { it.id in favoriteIds }
@@ -71,6 +74,22 @@ internal class BreedRepositoryImpl @Inject constructor(
             Result.Success(favorites)
         } catch (e: Exception) {
             Result.Error(e)
+        }
+    }
+
+    override fun observeFavoriteBreeds(): Flow<Result<List<Breed>>> {
+        return favoriteDao.getAllFavoriteIds().map { favoriteIds ->
+            try {
+                val favoriteIdSet = favoriteIds.toSet()
+                val allBreeds = breedDao.getAllBreeds()
+                val favorites = allBreeds
+                    .filter { it.id in favoriteIdSet }
+                    .let { entityMapper.mapToDomain(it) }
+                    .map { it.copy(isFavorite = true) }
+                Result.Success(favorites)
+            } catch (e: Exception) {
+                Result.Error(e)
+            }
         }
     }
 
@@ -101,7 +120,7 @@ internal class BreedRepositoryImpl @Inject constructor(
     }
 
     private suspend fun mergeFavoriteStatus(breeds: List<Breed>): List<Breed> {
-        val favoriteIds = favoriteDao.getAllFavoriteIds().toSet()
+        val favoriteIds = favoriteDao.getAllFavoriteIds().first().toSet()
         return breeds.map { it.copy(isFavorite = it.id in favoriteIds) }
     }
 

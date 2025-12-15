@@ -85,10 +85,14 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 - Makes the caching logic simpler (no need to preserve state during refresh)
 
 **Data flow:**
-1. `FavoriteDao` manages the favorites table (add, remove, query)
-2. `BreedRepositoryImpl` merges favorite status when returning breeds
-3. ViewModels call `toggleFavorite()` and optimistically update UI state
-4. Users can toggle favorites from List, Favorites, and Detail screens
+1. `FavoriteDao` manages the favorites table (add, remove, query via Flow)
+2. `BreedRepositoryImpl` exposes CRUD operations and `observeFavoriteBreeds()` Flow
+3. `ToggleFavoriteUseCase` handles toggle business logic (add/remove based on current state)
+4. `BreedFavoritesViewModel` collects the Flow - automatically updates when favorites change
+5. Other ViewModels use optimistic UI updates for immediate feedback
+6. Users can toggle favorites from List, Favorites, and Detail screens
+
+**Reactive updates:** The FavoritesScreen uses Room's Flow support to automatically refresh when favorites change from any screen (including Detail). This eliminates the need for manual refresh when navigating back.
 
 ## Commands
 
@@ -152,5 +156,6 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds_data/src/main/java/.../data/cache/CacheConfig.kt` - Cache TTL configuration
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
+- `cat_breeds/src/main/java/.../domain/usecase/ToggleFavoriteUseCase.kt` - Toggle favorite business logic
 - `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoutes.kt` - Navigation routes
 - `cat_breeds/src/main/java/.../presentation/ui/components/common/` - Shared UI components

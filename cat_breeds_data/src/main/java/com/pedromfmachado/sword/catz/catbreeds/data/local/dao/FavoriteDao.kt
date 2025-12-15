@@ -5,12 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteDao {
 
     @Query("SELECT breedId FROM favorites")
-    suspend fun getAllFavoriteIds(): List<String>
+    fun getAllFavoriteIds(): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addFavorite(favorite: FavoriteEntity)

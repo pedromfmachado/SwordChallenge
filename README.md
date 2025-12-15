@@ -44,9 +44,13 @@ Multi-module Clean Architecture with feature modules.
 Breeds are cached locally using Room with a network-first strategy:
 - **List**: Fetches from network if cache expired (24h TTL), falls back to cache on failure
 - **Detail**: Cache-only (the API detail endpoint doesn't return images)
-- **Favorites**: Stored in a separate table, persisted across cache refreshes
+- **Favorites**: Stored in a separate table, persisted across cache refreshes, reactive updates via Flow
 
 The 24h TTL was chosen due to the low variability of breed data.
+
+### Reactive Favorites
+
+The Favorites screen observes a Room Flow, so changes made from other screens (like toggling a favorite from the Detail screen) are automatically reflected when navigating back - no manual refresh needed.
 
 ## Building
 
@@ -58,15 +62,15 @@ The 24h TTL was chosen due to the low variability of breed data.
 
 ```bash
 # Unit tests (includes Robolectric Compose UI tests)
-./gradlew test
+./gradlew testDebugUnitTest
 
 # Screenshot tests
-./gradlew :cat_breeds:validateDebugScreenshotTest
+./gradlew validateDebugScreenshotTest
 ```
 
 ### Test Types
 
-- **Unit tests** - Repository tests, mapper tests, Compose UI tests (Robolectric)
+- **Unit tests** - Repository tests, ViewModel tests, UseCase tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
 ## CI
