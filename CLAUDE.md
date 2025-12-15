@@ -46,10 +46,10 @@ cat_breeds_data    cat_breeds
 
 - `cat_breeds_data/` - Data layer implementation
   - `data/api/` - CatApiService (Retrofit), DTOs
-  - `data/local/` - Room database, DAOs, entities
+  - `data/local/` - Room database, DAOs, entities (BreedEntity, FavoriteEntity, CacheMetadataEntity)
   - `data/cache/` - Cache configuration (24h TTL)
   - `data/mapper/` - BreedMapper (DTO to domain), BreedEntityMapper (entity to domain)
-  - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback)
+  - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback, favorites management)
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
@@ -76,6 +76,19 @@ MainScreen (RootNavHost)
 - **Detail screen**: Cache-only. The `/breeds/:breed_id` endpoint doesn't return images, so we rely on cached data from the list.
 - **TTL**: 24 hours, chosen due to low variability of breed data.
 - **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
+
+### Favorites Architecture
+
+Favorites are stored in a **separate `favorites` table** (not as a column on the breeds table). This design:
+- Preserves favorites during cache refreshes (breeds table can be fully replaced)
+- Cleanly separates API data from user preferences
+- Makes the caching logic simpler (no need to preserve state during refresh)
+
+**Data flow:**
+1. `FavoriteDao` manages the favorites table (add, remove, query)
+2. `BreedRepositoryImpl` merges favorite status when returning breeds
+3. ViewModels call `toggleFavorite()` and optimistically update UI state
+4. Users can toggle favorites from List, Favorites, and Detail screens
 
 ## Commands
 
@@ -132,6 +145,8 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 - `cat_breeds_data/src/main/java/.../data/api/CatApiService.kt` - Retrofit API interface
 - `cat_breeds_data/src/main/java/.../data/local/CatBreedsDatabase.kt` - Room database
 - `cat_breeds_data/src/main/java/.../data/local/dao/BreedDao.kt` - Breed data access
+- `cat_breeds_data/src/main/java/.../data/local/dao/FavoriteDao.kt` - Favorites data access
+- `cat_breeds_data/src/main/java/.../data/local/entity/FavoriteEntity.kt` - Favorites table entity
 - `cat_breeds_data/src/main/java/.../data/cache/CacheConfig.kt` - Cache TTL configuration
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings

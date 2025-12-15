@@ -26,7 +26,7 @@ fun ListScreen(
             BreedList(
                 breeds = state.breeds,
                 onBreedClick = onBreedClick,
-                onFavoriteClick = { /* No action for now */ },
+                onFavoriteClick = { breed -> viewModel.toggleFavorite(breed.id) },
                 modifier = modifier
             )
         }

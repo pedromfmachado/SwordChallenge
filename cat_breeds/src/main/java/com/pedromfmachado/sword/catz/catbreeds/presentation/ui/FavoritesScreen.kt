@@ -38,6 +38,7 @@ fun FavoritesScreen(
                 favoriteBreeds = state.breeds,
                 averageLifespan = state.averageLifespan,
                 onBreedClick = onBreedClick,
+                onFavoriteClick = { breed -> viewModel.toggleFavorite(breed.id) },
                 modifier = modifier
             )
         }
@@ -50,6 +51,7 @@ private fun FavoritesScreenContent(
     favoriteBreeds: List<Breed>,
     averageLifespan: Int?,
     onBreedClick: (Breed) -> Unit,
+    onFavoriteClick: (Breed) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -65,7 +67,7 @@ private fun FavoritesScreenContent(
         BreedList(
             breeds = favoriteBreeds,
             onBreedClick = onBreedClick,
-            onFavoriteClick = { /* No action for now */ },
+            onFavoriteClick = onFavoriteClick,
             modifier = Modifier.weight(1f)
         )
     }
@@ -77,6 +79,7 @@ private fun FavoritesScreenPreview() {
     FavoritesScreenContent(
         favoriteBreeds = PreviewData.favoriteBreeds,
         averageLifespan = 12,
-        onBreedClick = {}
+        onBreedClick = {},
+        onFavoriteClick = {}
     )
 }

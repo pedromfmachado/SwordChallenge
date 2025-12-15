@@ -38,6 +38,23 @@ class BreedDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            when (breedRepository.toggleFavorite(breedId)) {
+                is Result.Success -> {
+                    val currentState = _uiState.value
+                    if (currentState is BreedDetailUiState.Success) {
+                        val updatedBreed = currentState.breed.copy(
+                            isFavorite = !currentState.breed.isFavorite
+                        )
+                        _uiState.value = BreedDetailUiState.Success(updatedBreed)
+                    }
+                }
+                is Result.Error -> { /* Optionally show error */ }
+            }
+        }
+    }
 }
 
 sealed class BreedDetailUiState {

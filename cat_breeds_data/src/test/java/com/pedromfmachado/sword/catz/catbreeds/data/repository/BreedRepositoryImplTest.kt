@@ -6,8 +6,10 @@ import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.ImageDto
 import com.pedromfmachado.sword.catz.catbreeds.data.cache.CacheConfig
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.BreedDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.CacheMetadataDao
+import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.CacheMetadataEntity
+import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedEntityMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedMapper
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
@@ -43,12 +45,17 @@ class BreedRepositoryImplTest {
         on { mapToDomain(listOf(BASE_ENTITY)) } doReturn listOf(BASE_MODEL)
         on { mapToDomain(BASE_ENTITY) } doReturn BASE_MODEL
     }
+    private val favoriteDao = mock<FavoriteDao> {
+        onBlocking { getAllFavoriteIds() } doReturn emptyList()
+        onBlocking { isFavorite("abys") } doReturn false
+    }
     private val repository = BreedRepositoryImpl(
         apiService,
         mapper,
         breedDao,
         cacheMetadataDao,
-        entityMapper
+        entityMapper,
+        favoriteDao
     )
 
     @Test
@@ -122,11 +129,73 @@ class BreedRepositoryImplTest {
     }
 
     @Test
-    fun `getFavoriteBreeds returns Success with empty list`() = runTest {
+    fun `getFavoriteBreeds returns Success with empty list when no favorites`() = runTest {
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(emptyList())
+        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+
         val result = repository.getFavoriteBreeds()
 
         assertTrue(result is Result.Success)
         assertEquals(emptyList<Breed>(), (result as Result.Success).data)
+    }
+
+    @Test
+    fun `getFavoriteBreeds returns favorite breeds with isFavorite true`() = runTest {
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(listOf("abys"))
+        whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+
+        val result = repository.getFavoriteBreeds()
+
+        assertTrue(result is Result.Success)
+        val favorites = (result as Result.Success).data
+        assertEquals(1, favorites.size)
+        assertEquals("abys", favorites[0].id)
+        assertTrue(favorites[0].isFavorite)
+    }
+
+    @Test
+    fun `toggleFavorite adds favorite when breed is not favorited`() = runTest {
+        whenever(favoriteDao.isFavorite("abys")).thenReturn(false)
+
+        val result = repository.toggleFavorite("abys")
+
+        assertTrue(result is Result.Success)
+        verify(favoriteDao).addFavorite(FavoriteEntity("abys"))
+        verify(favoriteDao, never()).removeFavorite("abys")
+    }
+
+    @Test
+    fun `toggleFavorite removes favorite when breed is already favorited`() = runTest {
+        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+
+        val result = repository.toggleFavorite("abys")
+
+        assertTrue(result is Result.Success)
+        verify(favoriteDao).removeFavorite("abys")
+        verify(favoriteDao, never()).addFavorite(FavoriteEntity("abys"))
+    }
+
+    @Test
+    fun `getBreeds merges favorite status from favorites table`() = runTest {
+        whenever(favoriteDao.getAllFavoriteIds()).thenReturn(listOf("abys"))
+
+        val result = repository.getBreeds()
+
+        assertTrue(result is Result.Success)
+        val breeds = (result as Result.Success).data
+        assertEquals(1, breeds.size)
+        assertTrue(breeds[0].isFavorite)
+    }
+
+    @Test
+    fun `getBreedById returns breed with correct favorite status`() = runTest {
+        whenever(breedDao.getBreedById("abys")).thenReturn(BASE_ENTITY)
+        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+
+        val result = repository.getBreedById("abys")
+
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data.isFavorite)
     }
 
     companion object {

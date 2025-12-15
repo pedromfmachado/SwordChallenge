@@ -30,15 +30,35 @@ class BreedFavoritesViewModel @Inject constructor(
             when (val result = breedRepository.getFavoriteBreeds()) {
                 is Result.Success -> {
                     val breeds = result.data
-                    val averageLifespan = breeds.takeIf { it.isNotEmpty() }
-                        ?.map { (it.lifespanLow + it.lifespanHigh) / 2.0 }
-                        ?.average()
-                        ?.toInt()
+                    val averageLifespan = calculateAverageLifespan(breeds)
                     _uiState.value = BreedFavoritesUiState.Success(breeds, averageLifespan)
                 }
                 is Result.Error -> _uiState.value = BreedFavoritesUiState.Error(result.exception.message)
             }
         }
+    }
+
+    fun toggleFavorite(breedId: String) {
+        viewModelScope.launch {
+            when (breedRepository.toggleFavorite(breedId)) {
+                is Result.Success -> {
+                    val currentState = _uiState.value
+                    if (currentState is BreedFavoritesUiState.Success) {
+                        val updatedBreeds = currentState.breeds.filter { it.id != breedId }
+                        val averageLifespan = calculateAverageLifespan(updatedBreeds)
+                        _uiState.value = BreedFavoritesUiState.Success(updatedBreeds, averageLifespan)
+                    }
+                }
+                is Result.Error -> { /* Optionally show error */ }
+            }
+        }
+    }
+
+    private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
+        return breeds.takeIf { it.isNotEmpty() }
+            ?.map { (it.lifespanLow + it.lifespanHigh) / 2.0 }
+            ?.average()
+            ?.toInt()
     }
 }
 
