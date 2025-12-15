@@ -96,3 +96,6 @@ Desktop.ini
 *.env
 .env.*
 secrets.properties
+
+# Git
+.worktree

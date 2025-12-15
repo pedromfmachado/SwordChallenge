@@ -48,12 +48,17 @@ The 24h TTL was chosen due to the low variability of breed data.
 ## Testing
 
 ```bash
-# Unit tests
+# Unit tests (includes Robolectric Compose UI tests)
 ./gradlew test
 
 # Screenshot tests
 ./gradlew :cat_breeds:validateDebugScreenshotTest
 ```
+
+### Test Types
+
+- **Unit tests** - Repository tests, mapper tests, Compose UI tests (Robolectric)
+- **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
 ## CI
 

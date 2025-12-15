@@ -96,7 +96,7 @@ MainScreen (RootNavHost)
 ## Testing
 
 - **Unit**: JUnit 4, Mockito, TestParameterInjector, Coroutines Test
-- **UI**: Espresso, Compose UI Test
+- **Compose UI**: Robolectric + Compose UI Test (JVM-based, no emulator needed)
 - **Screenshot**: Compose Preview Screenshot Testing (experimental)
   - Test location: `cat_breeds/src/screenshotTest/`
   - Reference images: `cat_breeds/src/screenshotTestDebug/reference/`
