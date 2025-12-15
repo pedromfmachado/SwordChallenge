@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BreedFavoritesViewModel @Inject constructor(
-    private val breedRepository: BreedRepository
+    private val breedRepository: BreedRepository,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<BreedFavoritesUiState>(BreedFavoritesUiState.Loading)
@@ -38,13 +40,14 @@ class BreedFavoritesViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavorite(breedId: String) {
+    fun toggleFavorite(breed: Breed) {
         viewModelScope.launch {
-            when (breedRepository.toggleFavorite(breedId)) {
+            when (toggleFavoriteUseCase(breed.id, breed.isFavorite)) {
                 is Result.Success -> {
+                    // On favorites screen, toggling always unfavorites (removes from list)
                     val currentState = _uiState.value
                     if (currentState is BreedFavoritesUiState.Success) {
-                        val updatedBreeds = currentState.breeds.filter { it.id != breedId }
+                        val updatedBreeds = currentState.breeds.filter { it.id != breed.id }
                         val averageLifespan = calculateAverageLifespan(updatedBreeds)
                         _uiState.value = BreedFavoritesUiState.Success(updatedBreeds, averageLifespan)
                     }

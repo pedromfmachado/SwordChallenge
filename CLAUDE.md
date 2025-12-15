@@ -97,10 +97,12 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 ./gradlew assembleDebug
 
 # Run tests
-./gradlew test                                    # Unit tests
-./gradlew connectedCheck                          # Instrumentation tests
-./gradlew :cat_breeds:validateDebugScreenshotTest # Screenshot tests
-./gradlew :cat_breeds:updateDebugScreenshotTest   # Update screenshot references
+./gradlew testDebugUnitTest                       # Unit tests (all modules)
+./gradlew :module:testDebugUnitTest               # Unit tests (specific module)
+./gradlew validateDebugScreenshotTest             # Screenshot tests (all modules)
+./gradlew :module:validateDebugScreenshotTest     # Screenshot tests (specific module)
+./gradlew updateDebugScreenshotTest               # Update screenshot references (all modules)
+./gradlew :module:updateDebugScreenshotTest       # Update screenshot references (specific module)
 
 # Lint
 ./gradlew lint

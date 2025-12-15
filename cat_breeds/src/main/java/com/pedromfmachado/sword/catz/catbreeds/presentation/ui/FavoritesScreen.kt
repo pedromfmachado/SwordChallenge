@@ -38,7 +38,7 @@ fun FavoritesScreen(
                 favoriteBreeds = state.breeds,
                 averageLifespan = state.averageLifespan,
                 onBreedClick = onBreedClick,
-                onFavoriteClick = { breed -> viewModel.toggleFavorite(breed.id) },
+                onFavoriteClick = { breed -> viewModel.toggleFavorite(breed) },
                 modifier = modifier
             )
         }

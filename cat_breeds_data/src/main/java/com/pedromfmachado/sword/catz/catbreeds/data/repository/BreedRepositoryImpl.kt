@@ -74,15 +74,27 @@ internal class BreedRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun toggleFavorite(breedId: String): Result<Unit> {
+    override suspend fun addFavorite(breedId: String): Result<Unit> {
         return try {
-            val isFavorite = favoriteDao.isFavorite(breedId)
-            if (isFavorite) {
-                favoriteDao.removeFavorite(breedId)
-            } else {
-                favoriteDao.addFavorite(FavoriteEntity(breedId))
-            }
+            favoriteDao.addFavorite(FavoriteEntity(breedId))
             Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun removeFavorite(breedId: String): Result<Unit> {
+        return try {
+            favoriteDao.removeFavorite(breedId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun isFavorite(breedId: String): Result<Boolean> {
+        return try {
+            Result.Success(favoriteDao.isFavorite(breedId))
         } catch (e: Exception) {
             Result.Error(e)
         }

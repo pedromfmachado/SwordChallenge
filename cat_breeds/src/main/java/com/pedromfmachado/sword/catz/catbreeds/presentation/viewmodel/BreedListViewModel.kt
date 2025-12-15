@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BreedListViewModel @Inject constructor(
-    private val breedRepository: BreedRepository
+    private val breedRepository: BreedRepository,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<BreedListUiState>(BreedListUiState.Loading)
@@ -34,18 +36,14 @@ class BreedListViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavorite(breedId: String) {
+    fun toggleFavorite(breed: Breed) {
         viewModelScope.launch {
-            when (breedRepository.toggleFavorite(breedId)) {
+            when (val result = toggleFavoriteUseCase(breed.id, breed.isFavorite)) {
                 is Result.Success -> {
                     val currentState = _uiState.value
                     if (currentState is BreedListUiState.Success) {
-                        val updatedBreeds = currentState.breeds.map { breed ->
-                            if (breed.id == breedId) {
-                                breed.copy(isFavorite = !breed.isFavorite)
-                            } else {
-                                breed
-                            }
+                        val updatedBreeds = currentState.breeds.map {
+                            if (it.id == breed.id) it.copy(isFavorite = result.data) else it
                         }
                         _uiState.value = BreedListUiState.Success(updatedBreeds)
                     }

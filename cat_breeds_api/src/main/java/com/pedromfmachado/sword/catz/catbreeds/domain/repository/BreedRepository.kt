@@ -7,5 +7,7 @@ interface BreedRepository {
     suspend fun getBreeds(): Result<List<Breed>>
     suspend fun getFavoriteBreeds(): Result<List<Breed>>
     suspend fun getBreedById(id: String): Result<Breed>
-    suspend fun toggleFavorite(breedId: String): Result<Unit>
+    suspend fun addFavorite(breedId: String): Result<Unit>
+    suspend fun removeFavorite(breedId: String): Result<Unit>
+    suspend fun isFavorite(breedId: String): Result<Boolean>
 }

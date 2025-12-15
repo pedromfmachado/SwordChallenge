@@ -154,25 +154,39 @@ class BreedRepositoryImplTest {
     }
 
     @Test
-    fun `toggleFavorite adds favorite when breed is not favorited`() = runTest {
-        whenever(favoriteDao.isFavorite("abys")).thenReturn(false)
-
-        val result = repository.toggleFavorite("abys")
+    fun `addFavorite adds breed to favorites`() = runTest {
+        val result = repository.addFavorite("abys")
 
         assertTrue(result is Result.Success)
         verify(favoriteDao).addFavorite(FavoriteEntity("abys"))
-        verify(favoriteDao, never()).removeFavorite("abys")
     }
 
     @Test
-    fun `toggleFavorite removes favorite when breed is already favorited`() = runTest {
-        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
-
-        val result = repository.toggleFavorite("abys")
+    fun `removeFavorite removes breed from favorites`() = runTest {
+        val result = repository.removeFavorite("abys")
 
         assertTrue(result is Result.Success)
         verify(favoriteDao).removeFavorite("abys")
-        verify(favoriteDao, never()).addFavorite(FavoriteEntity("abys"))
+    }
+
+    @Test
+    fun `isFavorite returns true when breed is favorited`() = runTest {
+        whenever(favoriteDao.isFavorite("abys")).thenReturn(true)
+
+        val result = repository.isFavorite("abys")
+
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data)
+    }
+
+    @Test
+    fun `isFavorite returns false when breed is not favorited`() = runTest {
+        whenever(favoriteDao.isFavorite("abys")).thenReturn(false)
+
+        val result = repository.isFavorite("abys")
+
+        assertTrue(result is Result.Success)
+        assertEquals(false, (result as Result.Success).data)
     }
 
     @Test
