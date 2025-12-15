@@ -159,6 +159,30 @@ Pattern: `{feature}_{element}_{purpose}` (snake_case)
 | `{component}_` | Component content (e.g., `breed_`) |
 | `a11y_{feature}_` | Accessibility descriptions |
 
+## Claude Code Skills
+
+This project includes a custom Claude Code skill for evaluating coding challenge submissions.
+
+### Challenge Evaluator Skill
+
+Location: `.claude/skills/catz-challenge-evaluator/`
+
+**Purpose:** Systematically evaluate this coding challenge against SWORD Health requirements, producing a comprehensive assessment report with seniority level recommendation.
+
+**Usage:** Ask Claude Code to "evaluate this challenge" or "run the catz-challenge-evaluator skill"
+
+**What it produces:**
+- Seniority level assessment (Junior/Mid/Senior/Staff) with confidence rating
+- Requirements compliance checklist (functional + technical)
+- Architecture, code quality, and testing analysis
+- 18 interview questions across 4 categories
+- AI-generated code detection probes
+- Scoring rubric and quick reference card for interviewers
+
+**Files:**
+- `SKILL.md` - 9-phase evaluation workflow
+- `references/requirements.md` - Challenge requirements reference
+
 ## Key Files
 
 - `gradle/libs.versions.toml` - Dependencies
