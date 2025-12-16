@@ -20,11 +20,11 @@ class BreedRemoteMapperTest {
     ) {
         AllFields(
             dto = aBreedDto(),
-            model = aBreed()
+            model = aBreed(),
         ),
         NoImage(
             dto = aBreedDto(image = null),
-            model = aBreed(imageUrl = "")
+            model = aBreed(imageUrl = ""),
         ),
         SingleLifespan(
             dto = aBreedDto(lifeSpan = "20"),

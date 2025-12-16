@@ -52,7 +52,8 @@ class BreedDetailViewModel @Inject constructor(
                     _uiState.value = BreedDetailUiState.Success(updatedBreed)
                 }
 
-                is Result.Error -> { /* Optionally show error */
+                is Result.Error -> {
+                    // Silently fail - keep current state
                 }
             }
         }

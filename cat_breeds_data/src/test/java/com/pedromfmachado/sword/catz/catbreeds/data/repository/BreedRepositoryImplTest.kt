@@ -1,11 +1,8 @@
 package com.pedromfmachado.sword.catz.catbreeds.data.repository
 
 import com.pedromfmachado.sword.catz.catbreeds.data.api.CatApiService
-import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.BreedDto
-import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.ImageDto
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.BreedDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
-import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedLocalMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedRemoteMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.test.aBreedDto
