@@ -53,8 +53,7 @@ cat_breeds_data    cat_breeds
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
-  - `domain/model/` - PageResult (pagination wrapper)
-  - `domain/usecase/` - Business logic use cases (see Use Cases section)
+  - `domain/usecase/` - ToggleFavoriteUseCase (toggle favorite business logic)
   - `presentation/navigation/` - CatBreedsRoute (List, Favorites, Detail)
   - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
   - `presentation/ui/components/breed/` - BreedList, BreedListItem
@@ -110,22 +109,6 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 6. Users can toggle favorites from List, Favorites, and Detail screens
 
 **Reactive updates:** Both List and Favorites screens observe Room Flows, so changes made from any screen are automatically reflected. The List screen observes only favorite IDs (not full breeds) making it efficient and pagination-friendly.
-
-### Use Cases
-
-Business logic is extracted into dedicated use cases following Clean Architecture. ViewModels are thin orchestrators that delegate to use cases.
-
-| Use Case | Responsibility | Injected As |
-|----------|----------------|-------------|
-| `GetBreedsPageUseCase` | Fetches paginated breeds, calculates `hasMorePages` | `getBreedsPage` |
-| `FilterBreedsByNameUseCase` | Case-insensitive name filtering | `filterBreedsByName` |
-| `ApplyFavoriteStatusUseCase` | Merges favorite IDs into breed list | `applyFavoriteStatus` |
-| `CalculateAverageLifespanUseCase` | Computes average lifespan for favorites | `calculateAverageLifespan` |
-| `ToggleFavoriteUseCase` | Adds/removes breeds from favorites | `toggleFavoriteUseCase` |
-
-**Pattern:** All use cases use `@Inject` constructor and `operator fun invoke()` for clean call syntax (e.g., `getBreedsPage(page, pageSize)`).
-
-**Naming convention:** Use case classes have `UseCase` suffix, but injected variables omit it (except `toggleFavoriteUseCase` which conflicts with a function name).
 
 ## Commands
 
@@ -223,11 +206,6 @@ Location: `.claude/skills/catz-challenge-evaluator/`
 - `cat_breeds_data/src/main/java/.../data/local/entity/FavoriteEntity.kt` - Favorites table entity
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
-- `cat_breeds/src/main/java/.../domain/model/PageResult.kt` - Pagination result wrapper
-- `cat_breeds/src/main/java/.../domain/usecase/GetBreedsPageUseCase.kt` - Pagination business logic
-- `cat_breeds/src/main/java/.../domain/usecase/FilterBreedsByNameUseCase.kt` - Search filtering logic
-- `cat_breeds/src/main/java/.../domain/usecase/ApplyFavoriteStatusUseCase.kt` - Favorite status merging
-- `cat_breeds/src/main/java/.../domain/usecase/CalculateAverageLifespanUseCase.kt` - Lifespan calculation
 - `cat_breeds/src/main/java/.../domain/usecase/ToggleFavoriteUseCase.kt` - Toggle favorite business logic
 - `cat_breeds/src/main/java/.../presentation/navigation/CatBreedsRoute.kt` - Navigation routes
 - `cat_breeds/src/main/java/.../presentation/ui/components/common/` - Shared UI components
