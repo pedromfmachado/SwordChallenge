@@ -42,6 +42,7 @@ kotlin {
 dependencies {
     // Modules
     implementation(project(":cat_breeds_api"))
+    testImplementation(testFixtures(project(":cat_breeds_api")))
 
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
@@ -75,6 +76,8 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.test.parameter.injector)
     testImplementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

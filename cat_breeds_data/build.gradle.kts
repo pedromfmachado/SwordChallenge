@@ -29,6 +29,7 @@ kotlin {
 
 dependencies {
     implementation(project(":cat_breeds_api"))
+    testImplementation(testFixtures(project(":cat_breeds_api")))
 
     // Hilt
     implementation(libs.hilt.android)
