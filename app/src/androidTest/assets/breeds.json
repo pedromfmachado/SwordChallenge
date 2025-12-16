@@ -1,0 +1,35 @@
+[
+  {
+    "id": "abys",
+    "name": "Abyssinian",
+    "origin": "Egypt",
+    "temperament": "Active, Energetic, Independent",
+    "description": "The Abyssinian is easy to care for",
+    "life_span": "14 - 15",
+    "image": {
+      "url": "https://example.com/abyssinian.jpg"
+    }
+  },
+  {
+    "id": "beng",
+    "name": "Bengal",
+    "origin": "United States",
+    "temperament": "Alert, Agile, Energetic",
+    "description": "Bengals are a lot of fun to live with",
+    "life_span": "12 - 15",
+    "image": {
+      "url": "https://example.com/bengal.jpg"
+    }
+  },
+  {
+    "id": "pers",
+    "name": "Persian",
+    "origin": "Iran",
+    "temperament": "Affectionate, Loyal, Quiet",
+    "description": "Persian cats are known for their long hair",
+    "life_span": "10 - 15",
+    "image": {
+      "url": "https://example.com/persian.jpg"
+    }
+  }
+]

@@ -34,6 +34,8 @@ android {
         }
         val catApiKey = localProperties.getProperty("CAT_API_KEY") ?: ""
         buildConfigField("String", "CAT_API_KEY", "\"$catApiKey\"")
+
+        testInstrumentationRunner = "com.pedromfmachado.sword.catz.HiltTestRunner"
     }
 
     compileOptions {
@@ -80,6 +82,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.mockwebserver)
+    androidTestImplementation(libs.androidx.room.runtime)
+    kspAndroidTest(libs.hilt.compiler)
 
     // Hilt
     implementation(libs.hilt.android)

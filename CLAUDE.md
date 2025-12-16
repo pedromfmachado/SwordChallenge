@@ -123,6 +123,7 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 ./gradlew :module:validateDebugScreenshotTest     # Screenshot tests (specific module)
 ./gradlew updateDebugScreenshotTest               # Update screenshot references (all modules)
 ./gradlew :module:updateDebugScreenshotTest       # Update screenshot references (specific module)
+./gradlew :app:connectedDebugAndroidTest          # E2E tests (requires emulator/device)
 
 # Code style
 ./gradlew ktlintCheck                             # Check code style
@@ -146,6 +147,9 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 - **Screenshot**: Compose Preview Screenshot Testing (experimental)
   - Test location: `cat_breeds/src/screenshotTest/`
   - Reference images: `cat_breeds/src/screenshotTestDebug/reference/`
+- **E2E**: Hilt + Compose UI Test (instrumented, requires emulator/device)
+  - Test location: `app/src/androidTest/`
+  - Uses `FakeBreedRepository` for predictable test data
 
 ### Test Object Providers
 
