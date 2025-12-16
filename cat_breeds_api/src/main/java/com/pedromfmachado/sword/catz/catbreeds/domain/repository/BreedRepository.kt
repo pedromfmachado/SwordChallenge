@@ -5,9 +5,10 @@ import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
 import kotlinx.coroutines.flow.Flow
 
 interface BreedRepository {
-    suspend fun getBreeds(): Result<List<Breed>>
-
-    suspend fun searchBreeds(query: String): Result<List<Breed>>
+    suspend fun getBreeds(
+        page: Int,
+        pageSize: Int,
+    ): Result<List<Breed>>
 
     suspend fun getFavoriteBreeds(): Result<List<Breed>>
 

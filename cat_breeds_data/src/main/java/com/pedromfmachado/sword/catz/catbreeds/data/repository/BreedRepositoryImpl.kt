@@ -1,11 +1,8 @@
 package com.pedromfmachado.sword.catz.catbreeds.data.repository
 
 import com.pedromfmachado.sword.catz.catbreeds.data.api.CatApiService
-import com.pedromfmachado.sword.catz.catbreeds.data.cache.CacheConfig
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.BreedDao
-import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.CacheMetadataDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
-import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.CacheMetadataEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedLocalMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedRemoteMapper
@@ -21,42 +18,31 @@ internal class BreedRepositoryImpl @Inject constructor(
     private val apiService: CatApiService,
     private val breedDao: BreedDao,
     private val favoriteDao: FavoriteDao,
-    private val cacheMetadataDao: CacheMetadataDao,
     private val breedRemoteMapper: BreedRemoteMapper,
     private val breedLocalMapper: BreedLocalMapper,
 ) : BreedRepository {
-    override suspend fun getBreeds(): Result<List<Breed>> {
-        // Check if cache is valid
-        if (isCacheValid()) {
-            val cachedBreeds = breedDao.getAllBreeds()
-            if (cachedBreeds.isNotEmpty()) {
-                return Result.Success(mergeFavoriteStatus(breedLocalMapper.mapToDomain(cachedBreeds)))
-            }
-        }
-
-        // Try network
+    override suspend fun getBreeds(
+        page: Int,
+        pageSize: Int,
+    ): Result<List<Breed>> {
+        // Network-first approach
         return try {
-            val response = apiService.getBreeds()
+            val response = apiService.getBreeds(limit = pageSize, page = page)
             val breeds = breedRemoteMapper.mapToDomain(response)
             cacheBreeds(breeds)
             Result.Success(mergeFavoriteStatus(breeds))
         } catch (e: Exception) {
-            // Network failed, try returning stale cache
-            val cachedBreeds = breedDao.getAllBreeds()
+            // Network failed, try returning from cache
+            val offset = page * pageSize
+            val cachedBreeds = breedDao.getBreeds(limit = pageSize, offset = offset)
             if (cachedBreeds.isNotEmpty()) {
                 Result.Success(mergeFavoriteStatus(breedLocalMapper.mapToDomain(cachedBreeds)))
-            } else {
+            } else if (page == 0) {
                 Result.Error(e)
+            } else {
+                // For subsequent pages, empty result is acceptable (end of cached data)
+                Result.Success(emptyList())
             }
-        }
-    }
-
-    override suspend fun searchBreeds(query: String): Result<List<Breed>> {
-        return try {
-            val breeds = breedDao.searchBreeds(query)
-            Result.Success(mergeFavoriteStatus(breedLocalMapper.mapToDomain(breeds)))
-        } catch (e: Exception) {
-            Result.Error(e)
         }
     }
 
@@ -136,22 +122,8 @@ internal class BreedRepositoryImpl @Inject constructor(
         return breeds.map { it.copy(isFavorite = it.id in favoriteIds) }
     }
 
-    private suspend fun isCacheValid(): Boolean {
-        val metadata = cacheMetadataDao.getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY)
-            ?: return false
-        return System.currentTimeMillis() < metadata.expiresAt
-    }
-
     private suspend fun cacheBreeds(breeds: List<Breed>) {
-        val currentTime = System.currentTimeMillis()
-        breedDao.deleteAllBreeds()
+        // REPLACE on conflict handles duplicates
         breedDao.insertBreeds(breedLocalMapper.mapToEntities(breeds))
-        cacheMetadataDao.insertCacheMetadata(
-            CacheMetadataEntity(
-                cacheKey = CacheConfig.BREEDS_CACHE_KEY,
-                lastFetchedAt = currentTime,
-                expiresAt = currentTime + CacheConfig.CACHE_TTL_MS,
-            ),
-        )
     }
 }
