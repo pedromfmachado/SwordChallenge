@@ -5,9 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
-import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ApplyFavoriteStatusUseCase
-import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.FilterBreedsByNameUseCase
-import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.GetBreedsPageUseCase
 import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -27,9 +24,6 @@ class BreedListViewModel
     @Inject
     constructor(
         private val breedRepository: BreedRepository,
-        private val getBreedsPage: GetBreedsPageUseCase,
-        private val filterBreedsByName: FilterBreedsByNameUseCase,
-        private val applyFavoriteStatus: ApplyFavoriteStatusUseCase,
         private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow<BreedListUiState>(BreedListUiState.Loading)
@@ -62,10 +56,10 @@ class BreedListViewModel
                 currentPage = 0
                 hasMorePages = true
 
-                when (val result = getBreedsPage(page = 0, pageSize = PAGE_SIZE)) {
+                when (val result = breedRepository.getBreeds(page = 0, pageSize = PAGE_SIZE)) {
                     is Result.Success -> {
-                        loadedBreeds.addAll(applyFavoriteStatus(result.data.items, favoriteIds))
-                        hasMorePages = result.data.hasMorePages
+                        loadedBreeds.addAll(applyFavoriteStatus(result.data))
+                        hasMorePages = result.data.size == PAGE_SIZE
                         updateUiState()
                     }
                     is Result.Error -> {
@@ -83,10 +77,10 @@ class BreedListViewModel
                 updateUiState()
 
                 currentPage++
-                when (val result = getBreedsPage(page = currentPage, pageSize = PAGE_SIZE)) {
+                when (val result = breedRepository.getBreeds(page = currentPage, pageSize = PAGE_SIZE)) {
                     is Result.Success -> {
-                        loadedBreeds.addAll(applyFavoriteStatus(result.data.items, favoriteIds))
-                        hasMorePages = result.data.hasMorePages
+                        loadedBreeds.addAll(applyFavoriteStatus(result.data))
+                        hasMorePages = result.data.size == PAGE_SIZE
                     }
                     is Result.Error -> {
                         // Revert page increment on error, allow retry
@@ -122,10 +116,13 @@ class BreedListViewModel
         }
 
         private fun updateLoadedBreedsWithFavorites() {
-            val updatedBreeds = applyFavoriteStatus(loadedBreeds, favoriteIds)
+            val updatedBreeds = applyFavoriteStatus(loadedBreeds)
             loadedBreeds.clear()
             loadedBreeds.addAll(updatedBreeds)
         }
+
+        private fun applyFavoriteStatus(breeds: List<Breed>): List<Breed> =
+            breeds.map { it.copy(isFavorite = it.id in favoriteIds) }
 
         private fun updateUiState() {
             val currentState = _uiState.value
@@ -141,6 +138,9 @@ class BreedListViewModel
                 canLoadMore = hasMorePages && !isLoadingMore,
             )
         }
+
+        private fun filterBreedsByName(breeds: List<Breed>, query: String): List<Breed> =
+            if (query.isBlank()) breeds else breeds.filter { it.name.contains(query, ignoreCase = true) }
 
         fun toggleFavorite(breed: Breed) {
             viewModelScope.launch {

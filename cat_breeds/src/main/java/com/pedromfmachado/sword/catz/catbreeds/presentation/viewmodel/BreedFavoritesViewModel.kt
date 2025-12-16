@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
-import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.CalculateAverageLifespanUseCase
 import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +19,6 @@ class BreedFavoritesViewModel
     @Inject
     constructor(
         private val breedRepository: BreedRepository,
-        private val calculateAverageLifespan: CalculateAverageLifespanUseCase,
         private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     ) : ViewModel() {
         val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
@@ -45,6 +43,11 @@ class BreedFavoritesViewModel
                 toggleFavoriteUseCase(breed.id, breed.isFavorite)
                 // No need to manually update state - the Flow will emit automatically
             }
+        }
+
+        private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
+            if (breeds.isEmpty()) return null
+            return breeds.map { (it.lifespanLow + it.lifespanHigh) / 2 }.average().toInt()
         }
     }
 
