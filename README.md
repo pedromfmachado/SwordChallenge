@@ -73,8 +73,20 @@ Both List and Favorites screens observe Room Flows, so changes made from any scr
 
 ### Test Types
 
-- **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
+- **Unit tests** - Repository tests, Use Case tests (5 use cases), Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
+
+### Use Cases
+
+Business logic is extracted into dedicated use cases following Clean Architecture:
+
+| Use Case | Purpose |
+|----------|---------|
+| `GetBreedsPageUseCase` | Fetches paginated breeds, determines if more pages exist |
+| `FilterBreedsByNameUseCase` | Case-insensitive name filtering for search |
+| `ApplyFavoriteStatusUseCase` | Merges favorite IDs into breed list |
+| `CalculateAverageLifespanUseCase` | Computes average lifespan for favorites |
+| `ToggleFavoriteUseCase` | Adds/removes breeds from favorites |
 
 ## Code Style
 
