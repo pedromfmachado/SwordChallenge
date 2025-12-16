@@ -3,9 +3,9 @@ package com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
-import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import com.pedromfmachado.sword.catz.catbreeds.domain.test.aBreed
 import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import com.pedromfmachado.sword.catz.catbreeds.presentation.navigation.CatBreedsRoute
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -44,87 +45,61 @@ class BreedDetailViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private data class TestDependencies(
-        val repository: BreedRepository,
-        val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-        val viewModel: BreedDetailViewModel,
-    )
+    private fun savedStateHandle(breedId: String = "abys") =
+        SavedStateHandle(mapOf(CatBreedsRoute.ARG_BREED_ID to breedId))
 
-    private fun createDependencies(
-        breedId: String = "abys",
-        breedResult: Result<Breed> = Result.Success(BASE_BREED),
-        toggleFavoriteResult: Result<Boolean>? = null,
-    ): TestDependencies {
-        val savedStateHandle = SavedStateHandle(mapOf(CatBreedsRoute.ARG_BREED_ID to breedId))
+    @Test
+    fun `initial state is Loading`() = runTest {
         val repository: BreedRepository = mock {
-            onBlocking { getBreedById(breedId) } doReturn breedResult
+            onBlocking { getBreedById("abys") } doReturn Result.Success(aBreed())
         }
-        val toggleFavoriteUseCase: ToggleFavoriteUseCase = if (toggleFavoriteResult != null) {
-            mock {
-                onBlocking { invoke(any(), any()) } doReturn toggleFavoriteResult
-            }
-        } else {
-            mock()
-        }
-        val viewModel = BreedDetailViewModel(savedStateHandle, repository, toggleFavoriteUseCase)
-        return TestDependencies(repository, toggleFavoriteUseCase, viewModel)
-    }
 
-    private fun assertSuccessState(viewModel: BreedDetailViewModel): BreedDetailUiState.Success {
-        val state = viewModel.uiState.value
-        assertTrue("Expected Success state but was $state", state is BreedDetailUiState.Success)
-        return state as BreedDetailUiState.Success
-    }
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, mock())
 
-    private fun assertErrorState(viewModel: BreedDetailViewModel): BreedDetailUiState.Error {
-        val state = viewModel.uiState.value
-        assertTrue("Expected Error state but was $state", state is BreedDetailUiState.Error)
-        return state as BreedDetailUiState.Error
+        assertEquals(BreedDetailUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun `initial state is Loading`() =
-        runTest {
-            val (_, _, viewModel) = createDependencies()
-
-            assertEquals(BreedDetailUiState.Loading, viewModel.uiState.value)
+    fun `loads breed on init and transitions to Success`() = runTest {
+        val breed = aBreed()
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Success(breed)
         }
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, mock())
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value as BreedDetailUiState.Success
+        assertEquals(breed, state.breed)
+    }
 
     @Test
-    fun `loads breed on init and transitions to Success`() =
-        runTest {
-            val (_, _, viewModel) = createDependencies(breedResult = Result.Success(BASE_BREED))
-            advanceUntilIdle()
-
-            val state = assertSuccessState(viewModel)
-            assertEquals(BASE_BREED, state.breed)
+    fun `transitions to Error state when repository fails`() = runTest {
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Error(RuntimeException("Breed not found"))
         }
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, mock())
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value as BreedDetailUiState.Error
+        assertEquals("Breed not found", state.message)
+    }
 
     @Test
-    fun `transitions to Error state when repository fails`() =
-        runTest {
-            val exception = RuntimeException("Breed not found")
-            val (_, _, viewModel) = createDependencies(breedResult = Result.Error(exception))
-            advanceUntilIdle()
-
-            val state = assertErrorState(viewModel)
-            assertEquals("Breed not found", state.message)
+    fun `loads breed by id from savedStateHandle`() = runTest {
+        val customBreed = aBreed(id = "beng", name = "Bengal")
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("beng") } doReturn Result.Success(customBreed)
         }
 
-    @Test
-    fun `loads breed by id from savedStateHandle`() =
-        runTest {
-            val customBreed = BASE_BREED.copy(id = "beng", name = "Bengal")
-            val (_, _, viewModel) = createDependencies(
-                breedId = "beng",
-                breedResult = Result.Success(customBreed),
-            )
-            advanceUntilIdle()
+        val viewModel = BreedDetailViewModel(savedStateHandle("beng"), repository, mock())
+        advanceUntilIdle()
 
-            val state = assertSuccessState(viewModel)
-            assertEquals("beng", state.breed.id)
-            assertEquals("Bengal", state.breed.name)
-        }
+        val state = viewModel.uiState.value as BreedDetailUiState.Success
+        assertEquals("beng", state.breed.id)
+        assertEquals("Bengal", state.breed.name)
+    }
 
     enum class ToggleFavoriteTestCase(
         val initialIsFavorite: Boolean,
@@ -139,52 +114,52 @@ class BreedDetailViewModelTest {
     fun `toggleFavorite updates breed isFavorite state`(
         @TestParameter testCase: ToggleFavoriteTestCase,
     ) = runTest {
-        val breed = BASE_BREED.copy(isFavorite = testCase.initialIsFavorite)
-        val (_, _, viewModel) = createDependencies(
-            breedResult = Result.Success(breed),
-            toggleFavoriteResult = Result.Success(testCase.toggleResult),
-        )
+        val breed = aBreed(isFavorite = testCase.initialIsFavorite)
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Success(breed)
+        }
+        val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock {
+            onBlocking { invoke(any(), any()) } doReturn Result.Success(testCase.toggleResult)
+        }
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, toggleFavoriteUseCase)
         advanceUntilIdle()
 
         viewModel.toggleFavorite()
         advanceUntilIdle()
 
-        val state = assertSuccessState(viewModel)
+        val state = viewModel.uiState.value as BreedDetailUiState.Success
         assertEquals(testCase.expectedIsFavorite, state.breed.isFavorite)
     }
 
     @Test
-    fun `toggleFavorite calls use case with correct parameters`() =
-        runTest {
-            val breed = BASE_BREED.copy(id = "abys", isFavorite = false)
-            val (_, toggleFavoriteUseCase, viewModel) = createDependencies(
-                breedResult = Result.Success(breed),
-                toggleFavoriteResult = Result.Success(true),
-            )
-            advanceUntilIdle()
-
-            viewModel.toggleFavorite()
-            advanceUntilIdle()
-
-            verify(toggleFavoriteUseCase).invoke(eq("abys"), eq(false))
+    fun `toggleFavorite calls use case with correct parameters`() = runTest {
+        val breed = aBreed(id = "abys", isFavorite = false)
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Success(breed)
+        }
+        val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock {
+            onBlocking { invoke(any(), any()) } doReturn Result.Success(true)
         }
 
-    enum class ToggleBlockedTestCase(
-        val breedResult: Result<Breed>,
-        val shouldAdvance: Boolean,
-    ) {
-        ErrorState(Result.Error(RuntimeException("Error")), true),
-        LoadingState(Result.Success(BASE_BREED), false),
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, toggleFavoriteUseCase)
+        advanceUntilIdle()
+
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+
+        verify(toggleFavoriteUseCase).invoke(eq("abys"), eq(false))
     }
 
     @Test
-    fun `toggleFavorite does nothing when not in Success state`(
-        @TestParameter testCase: ToggleBlockedTestCase,
-    ) = runTest {
-        val (_, toggleFavoriteUseCase, viewModel) = createDependencies(breedResult = testCase.breedResult)
-        if (testCase.shouldAdvance) {
-            advanceUntilIdle()
+    fun `toggleFavorite does nothing when in Error state`() = runTest {
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Error(RuntimeException("Error"))
         }
+        val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock()
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, toggleFavoriteUseCase)
+        advanceUntilIdle()
 
         viewModel.toggleFavorite()
         advanceUntilIdle()
@@ -193,44 +168,51 @@ class BreedDetailViewModelTest {
     }
 
     @Test
-    fun `toggleFavorite preserves state when use case returns error`() =
-        runTest {
-            val breed = BASE_BREED.copy(isFavorite = false)
-            val (_, _, viewModel) = createDependencies(
-                breedResult = Result.Success(breed),
-                toggleFavoriteResult = Result.Error(RuntimeException("Database error")),
-            )
-            advanceUntilIdle()
-
-            viewModel.toggleFavorite()
-            advanceUntilIdle()
-
-            val state = assertSuccessState(viewModel)
-            assertFalse(state.breed.isFavorite)
+    fun `toggleFavorite does nothing when in Loading state`() = runTest {
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Success(aBreed())
         }
+        val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock()
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, toggleFavoriteUseCase)
+        // Don't advance - stay in Loading state
+
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+
+        verify(toggleFavoriteUseCase, never()).invoke(any(), any())
+    }
 
     @Test
-    fun `Error state contains null message when exception has no message`() =
-        runTest {
-            val exception = RuntimeException()
-            val (_, _, viewModel) = createDependencies(breedResult = Result.Error(exception))
-            advanceUntilIdle()
-
-            val state = assertErrorState(viewModel)
-            assertEquals(null, state.message)
+    fun `toggleFavorite preserves state when use case returns error`() = runTest {
+        val breed = aBreed(isFavorite = false)
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Success(breed)
+        }
+        val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock {
+            onBlocking { invoke(any(), any()) } doReturn Result.Error(RuntimeException("Database error"))
         }
 
-    companion object {
-        private val BASE_BREED = Breed(
-            id = "abys",
-            name = "Abyssinian",
-            origin = "Egypt",
-            temperament = "Active, Energetic",
-            description = "The Abyssinian is easy to care for",
-            lifespanLow = 14,
-            lifespanHigh = 15,
-            imageUrl = "https://example.com/cat.jpg",
-            isFavorite = false,
-        )
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, toggleFavoriteUseCase)
+        advanceUntilIdle()
+
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value as BreedDetailUiState.Success
+        assertFalse(state.breed.isFavorite)
+    }
+
+    @Test
+    fun `Error state contains null message when exception has no message`() = runTest {
+        val repository: BreedRepository = mock {
+            onBlocking { getBreedById("abys") } doReturn Result.Error(RuntimeException())
+        }
+
+        val viewModel = BreedDetailViewModel(savedStateHandle(), repository, mock())
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value as BreedDetailUiState.Error
+        assertNull(state.message)
     }
 }
