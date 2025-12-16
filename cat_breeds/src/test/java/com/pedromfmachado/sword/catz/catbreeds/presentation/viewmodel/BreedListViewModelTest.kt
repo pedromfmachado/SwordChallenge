@@ -6,6 +6,7 @@ import com.pedromfmachado.sword.catz.catbreeds.domain.test.aBreed
 import com.pedromfmachado.sword.catz.catbreeds.domain.usecase.ToggleFavoriteUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -61,7 +62,7 @@ class BreedListViewModelTest {
         whenever(repository.getBreeds(any(), any())).thenReturn(Result.Error(RuntimeException("Network error")))
 
         val viewModel = BreedListViewModel(repository, toggleFavoriteUseCase)
-        advanceUntilIdle()
+        testDispatcher.scheduler.runCurrent() // Don't advance time to avoid search debounce overwriting Error
 
         val state = viewModel.uiState.value as BreedListUiState.Error
         assertEquals("Network error", state.message)
