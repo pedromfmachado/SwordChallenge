@@ -53,6 +53,7 @@ cat_breeds_data    cat_breeds
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
 
 - `cat_breeds/` - Feature module for cat breed screens
+  - `domain/usecase/` - ToggleFavoriteUseCase (toggle favorite business logic)
   - `presentation/navigation/` - CatBreedsRoute (List, Favorites, Detail)
   - `presentation/ui/` - ListScreen, FavoritesScreen, DetailScreen
   - `presentation/ui/components/breed/` - BreedList, BreedListItem
