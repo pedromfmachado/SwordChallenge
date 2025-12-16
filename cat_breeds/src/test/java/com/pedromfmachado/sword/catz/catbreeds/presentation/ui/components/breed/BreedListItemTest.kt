@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
-import com.pedromfmachado.sword.catz.catbreeds.preview.PreviewData
+import com.pedromfmachado.sword.catz.catbreeds.domain.test.aBreed
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +23,7 @@ class BreedListItemTest {
 
     @Test
     fun `breed list item displays breed name`() {
-        val breed = PreviewData.persianBreed
+        val breed = aBreed()
 
         composeTestRule.setContent {
             BreedListItem(
@@ -38,7 +38,7 @@ class BreedListItemTest {
 
     @Test
     fun `breed list item shows remove from favorites description for favorite breed`() {
-        val breed = PreviewData.maineCoonBreed // isFavorite = true
+        val breed = aBreed(isFavorite = true)
 
         composeTestRule.setContent {
             BreedListItem(
@@ -55,7 +55,7 @@ class BreedListItemTest {
 
     @Test
     fun `breed list item shows add to favorites description for non-favorite breed`() {
-        val breed = PreviewData.persianBreed // isFavorite = false
+        val breed = aBreed(isFavorite = false)
 
         composeTestRule.setContent {
             BreedListItem(
@@ -72,7 +72,7 @@ class BreedListItemTest {
 
     @Test
     fun `clicking card invokes onClick callback with correct breed`() {
-        val breed = PreviewData.persianBreed
+        val breed = aBreed()
         val onClick = mock<(Breed) -> Unit>()
 
         composeTestRule.setContent {
@@ -93,7 +93,7 @@ class BreedListItemTest {
 
     @Test
     fun `clicking favorite button invokes onFavoriteClick callback with correct breed`() {
-        val breed = PreviewData.persianBreed
+        val breed = aBreed()
         val onFavoriteClick = mock<(Breed) -> Unit>()
 
         composeTestRule.setContent {

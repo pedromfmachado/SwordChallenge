@@ -15,41 +15,39 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BreedFavoritesViewModel
-    @Inject
-    constructor(
-        private val breedRepository: BreedRepository,
-        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    ) : ViewModel() {
-        val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
-            .map { result ->
-                when (result) {
-                    is Result.Success -> {
-                        val breeds = result.data
-                        val averageLifespan = calculateAverageLifespan(breeds)
-                        BreedFavoritesUiState.Success(breeds, averageLifespan)
-                    }
-                    is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
+class BreedFavoritesViewModel @Inject constructor(
+    breedRepository: BreedRepository,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+) : ViewModel() {
+    val uiState: StateFlow<BreedFavoritesUiState> = breedRepository.observeFavoriteBreeds()
+        .map { result ->
+            when (result) {
+                is Result.Success -> {
+                    val breeds = result.data
+                    val averageLifespan = calculateAverageLifespan(breeds)
+                    BreedFavoritesUiState.Success(breeds, averageLifespan)
                 }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = BreedFavoritesUiState.Loading,
-            )
 
-        fun toggleFavorite(breed: Breed) {
-            viewModelScope.launch {
-                toggleFavoriteUseCase(breed.id, breed.isFavorite)
-                // No need to manually update state - the Flow will emit automatically
+                is Result.Error -> BreedFavoritesUiState.Error(result.exception.message)
             }
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = BreedFavoritesUiState.Loading,
+        )
 
-        private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
-            if (breeds.isEmpty()) return null
-            return breeds.map { (it.lifespanLow + it.lifespanHigh) / 2 }.average().toInt()
+    fun toggleFavorite(breed: Breed) {
+        viewModelScope.launch {
+            toggleFavoriteUseCase(breed.id, breed.isFavorite)
         }
     }
+
+    private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
+        if (breeds.isEmpty()) return null
+        return breeds.map { (it.lifespanLow + it.lifespanHigh) / 2 }.average().toInt()
+    }
+}
 
 sealed class BreedFavoritesUiState {
     data object Loading : BreedFavoritesUiState()
