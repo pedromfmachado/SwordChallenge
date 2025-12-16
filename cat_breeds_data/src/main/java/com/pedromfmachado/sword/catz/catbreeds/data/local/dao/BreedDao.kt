@@ -8,14 +8,17 @@ import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
 
 @Dao
 interface BreedDao {
-    @Query("SELECT * FROM breeds")
+    @Query("SELECT * FROM breeds ORDER BY name ASC")
     suspend fun getAllBreeds(): List<BreedEntity>
+
+    @Query("SELECT * FROM breeds ORDER BY name ASC LIMIT :limit OFFSET :offset")
+    suspend fun getBreeds(
+        limit: Int,
+        offset: Int,
+    ): List<BreedEntity>
 
     @Query("SELECT * FROM breeds WHERE id = :id")
     suspend fun getBreedById(id: String): BreedEntity?
-
-    @Query("SELECT * FROM breeds WHERE name LIKE '%' || :query || '%' ORDER BY name ASC")
-    suspend fun searchBreeds(query: String): List<BreedEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBreeds(breeds: List<BreedEntity>)

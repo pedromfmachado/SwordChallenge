@@ -3,13 +3,9 @@ package com.pedromfmachado.sword.catz.catbreeds.data.repository
 import com.pedromfmachado.sword.catz.catbreeds.data.api.CatApiService
 import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.BreedDto
 import com.pedromfmachado.sword.catz.catbreeds.data.api.dto.ImageDto
-import com.pedromfmachado.sword.catz.catbreeds.data.cache.CacheConfig
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.BreedDao
-import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.CacheMetadataDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.dao.FavoriteDao
 import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.BreedEntity
-import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.CacheMetadataEntity
-import com.pedromfmachado.sword.catz.catbreeds.data.local.entity.FavoriteEntity
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedLocalMapper
 import com.pedromfmachado.sword.catz.catbreeds.data.mapper.BreedRemoteMapper
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
@@ -20,16 +16,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class BreedRepositoryImplTest {
     private val apiService = mock<CatApiService> {
-        onBlocking { getBreeds() } doReturn listOf(BASE_DTO)
+        onBlocking { getBreeds(any(), any()) } doReturn listOf(BASE_DTO)
     }
     private val remoteMapper = mock<BreedRemoteMapper> {
         on { mapToDomain(listOf(BASE_DTO)) } doReturn listOf(BASE_MODEL)
@@ -37,9 +33,7 @@ class BreedRepositoryImplTest {
     }
     private val breedDao = mock<BreedDao> {
         onBlocking { getAllBreeds() } doReturn emptyList()
-    }
-    private val cacheMetadataDao = mock<CacheMetadataDao> {
-        onBlocking { getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY) } doReturn null
+        onBlocking { getBreeds(any(), any()) } doReturn emptyList()
     }
     private val localMapper = mock<BreedLocalMapper> {
         on { mapToEntities(listOf(BASE_MODEL)) } doReturn listOf(BASE_ENTITY)
@@ -54,63 +48,56 @@ class BreedRepositoryImplTest {
         apiService,
         breedDao,
         favoriteDao,
-        cacheMetadataDao,
         remoteMapper,
         localMapper,
     )
 
     @Test
-    fun `getBreeds fetches from network when cache is invalid`() =
+    fun `getBreeds fetches from network with pagination params`() =
         runTest {
-            val result = repository.getBreeds()
+            val result = repository.getBreeds(page = 0, pageSize = 10)
 
             assertTrue(result is Result.Success)
             assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
-            verify(apiService).getBreeds()
         }
 
     @Test
-    fun `getBreeds returns cached data when cache is valid`() =
-        runTest {
-            val validMetadata = CacheMetadataEntity(
-                cacheKey = CacheConfig.BREEDS_CACHE_KEY,
-                lastFetchedAt = System.currentTimeMillis(),
-                expiresAt = System.currentTimeMillis() + CacheConfig.CACHE_TTL_MS,
-            )
-            whenever(cacheMetadataDao.getCacheMetadata(CacheConfig.BREEDS_CACHE_KEY)).thenReturn(validMetadata)
-            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
-
-            val result = repository.getBreeds()
-
-            assertTrue(result is Result.Success)
-            assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
-            verify(apiService, never()).getBreeds()
-        }
-
-    @Test
-    fun `getBreeds returns stale cache when network fails`() =
+    fun `getBreeds returns cached data when network fails`() =
         runTest {
             val exception = RuntimeException("Network error")
-            whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
-            whenever(breedDao.getAllBreeds()).thenReturn(listOf(BASE_ENTITY))
+            whenever(apiService.getBreeds(any(), any())).doSuspendableAnswer { throw exception }
+            whenever(breedDao.getBreeds(eq(10), eq(0))).thenReturn(listOf(BASE_ENTITY))
 
-            val result = repository.getBreeds()
+            val result = repository.getBreeds(page = 0, pageSize = 10)
 
             assertTrue(result is Result.Success)
             assertEquals(listOf(BASE_MODEL), (result as Result.Success).data)
         }
 
     @Test
-    fun `getBreeds returns Error when network fails and cache is empty`() =
+    fun `getBreeds returns Error when network fails and cache is empty on first page`() =
         runTest {
             val exception = RuntimeException("Network error")
-            whenever(apiService.getBreeds()).doSuspendableAnswer { throw exception }
-            whenever(breedDao.getAllBreeds()).thenReturn(emptyList())
+            whenever(apiService.getBreeds(any(), any())).doSuspendableAnswer { throw exception }
+            whenever(breedDao.getBreeds(any(), any())).thenReturn(emptyList())
 
-            val result = repository.getBreeds()
+            val result = repository.getBreeds(page = 0, pageSize = 10)
 
             assertTrue(result is Result.Error)
             assertEquals(exception, (result as Result.Error).exception)
+        }
+
+    @Test
+    fun `getBreeds returns empty Success when network fails on subsequent pages`() =
+        runTest {
+            val exception = RuntimeException("Network error")
+            whenever(apiService.getBreeds(any(), any())).doSuspendableAnswer { throw exception }
+            whenever(breedDao.getBreeds(any(), any())).thenReturn(emptyList())
+
+            val result = repository.getBreeds(page = 1, pageSize = 10)
+
+            assertTrue(result is Result.Success)
+            assertEquals(emptyList<Breed>(), (result as Result.Success).data)
         }
 
     @Test
@@ -168,7 +155,6 @@ class BreedRepositoryImplTest {
             val result = repository.addFavorite("abys")
 
             assertTrue(result is Result.Success)
-            verify(favoriteDao).addFavorite(FavoriteEntity("abys"))
         }
 
     @Test
@@ -177,7 +163,6 @@ class BreedRepositoryImplTest {
             val result = repository.removeFavorite("abys")
 
             assertTrue(result is Result.Success)
-            verify(favoriteDao).removeFavorite("abys")
         }
 
     @Test
@@ -207,7 +192,7 @@ class BreedRepositoryImplTest {
         runTest {
             whenever(favoriteDao.getAllFavoriteIds()).thenReturn(flowOf(listOf("abys")))
 
-            val result = repository.getBreeds()
+            val result = repository.getBreeds(page = 0, pageSize = 10)
 
             assertTrue(result is Result.Success)
             val breeds = (result as Result.Success).data

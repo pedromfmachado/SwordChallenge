@@ -50,6 +50,7 @@ fun ListScreen(
             uiState = uiState,
             onBreedClick = onBreedClick,
             onFavoriteClick = viewModel::toggleFavorite,
+            onLoadMore = viewModel::loadNextPage,
             modifier = Modifier.weight(1f),
         )
     }
@@ -60,6 +61,7 @@ private fun ListScreenContent(
     uiState: BreedListUiState,
     onBreedClick: (Breed) -> Unit,
     onFavoriteClick: (Breed) -> Unit,
+    onLoadMore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -69,6 +71,9 @@ private fun ListScreenContent(
                 breeds = uiState.breeds,
                 onBreedClick = onBreedClick,
                 onFavoriteClick = onFavoriteClick,
+                isLoadingMore = uiState.isLoadingMore,
+                canLoadMore = uiState.canLoadMore,
+                onLoadMore = onLoadMore,
                 modifier = modifier,
             )
         }

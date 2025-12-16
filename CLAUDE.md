@@ -47,8 +47,7 @@ cat_breeds_data    cat_breeds
 
 - `cat_breeds_data/` - Data layer implementation
   - `data/api/` - CatApiService (Retrofit), DTOs
-  - `data/local/` - Room database, DAOs, entities (BreedEntity, FavoriteEntity, CacheMetadataEntity)
-  - `data/cache/` - Cache configuration (24h TTL)
+  - `data/local/` - Room database, DAOs, entities (BreedEntity, FavoriteEntity)
   - `data/mapper/` - BreedMapper (DTO to domain), BreedEntityMapper (entity to domain)
   - `data/repository/` - BreedRepositoryImpl (network-first with cache fallback, favorites management)
   - `data/di/` - Hilt modules (BreedDataModule, NetworkServiceModule, DatabaseModule)
@@ -73,18 +72,25 @@ MainScreen (RootNavHost)
 
 ### Caching Strategy
 
-- **List screen**: Network-first with cache fallback. Fetches from API if cache expired (24h TTL), falls back to stale cache on network failure.
+- **List screen**: Network-first with pagination. Fetches in pages of 10 from the API, caches breeds as they're fetched. Falls back to cached data on network failure.
 - **Detail screen**: Cache-only. The `/breeds/:breed_id` endpoint doesn't return images, so we rely on cached data from the list.
-- **TTL**: 24 hours, chosen due to low variability of breed data.
-- **Metadata**: Cache validity tracked in separate `CacheMetadataEntity` table (not per-breed timestamps).
+- **No TTL**: Cache is purely for offline fallback. Data is always fresh when online since we always hit the network first.
+
+### Pagination
+
+The List screen uses infinite scroll pagination:
+- **Page size**: 10 breeds per page
+- **Trigger**: Loads next page when user scrolls within 3 items of the end
+- **State**: ViewModel tracks `loadedBreeds`, `currentPage`, `hasMorePages`, `isLoadingMore`
+- **End detection**: API returning fewer than `pageSize` items indicates no more pages
 
 ### Search/Filtering
 
 The List screen includes a search bar that filters breeds by name:
-- **Implementation**: Room LIKE query on cached data (instant, works offline)
-- **Debounce**: 300ms delay to avoid excessive queries while typing
-- **Data flow**: `SearchBar` → `ViewModel.onSearchQueryChange()` → debounce → `BreedDao.searchBreeds()` → merge favorites → update UI
-- **Empty query**: Falls back to showing all breeds via `getBreeds()`
+- **Implementation**: In-memory filtering on loaded breeds (instant, no database queries)
+- **Debounce**: 300ms delay to avoid excessive re-filtering while typing
+- **Data flow**: `SearchBar` → `ViewModel.onSearchQueryChange()` → debounce → `loadedBreeds.filter { it.name.contains(query) }` → update UI
+- **Independence**: Filtering doesn't affect pagination - user can continue loading more pages while filtered
 
 ### Favorites Architecture
 
@@ -197,7 +203,6 @@ Location: `.claude/skills/catz-challenge-evaluator/`
 - `cat_breeds_data/src/main/java/.../data/local/dao/BreedDao.kt` - Breed data access
 - `cat_breeds_data/src/main/java/.../data/local/dao/FavoriteDao.kt` - Favorites data access
 - `cat_breeds_data/src/main/java/.../data/local/entity/FavoriteEntity.kt` - Favorites table entity
-- `cat_breeds_data/src/main/java/.../data/cache/CacheConfig.kt` - Cache TTL configuration
 - `cat_breeds_data/src/main/java/.../data/mapper/BreedMapper.kt` - DTO to domain mapper
 - `cat_breeds_data/src/main/java/.../data/di/BreedDataModule.kt` - Repository DI bindings
 - `cat_breeds/src/main/java/.../domain/usecase/ToggleFavoriteUseCase.kt` - Toggle favorite business logic

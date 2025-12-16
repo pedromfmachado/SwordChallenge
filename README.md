@@ -5,7 +5,8 @@ Android app for browsing and favoriting cat breeds, built as a challenge solutio
 ## Features
 
 - **Browse Breeds** - View a list of cat breeds with images, names, and origin
-- **Search** - Filter breeds by name with instant results (works offline)
+- **Infinite Scroll** - Breeds load in pages of 10 as you scroll
+- **Search** - Filter loaded breeds by name with instant results (in-memory filtering)
 - **Breed Details** - See detailed information including temperament, lifespan, and description
 - **Favorites** - Mark breeds as favorites from any screen (list, detail, or favorites tab)
 - **Offline Support** - Breeds are cached locally for offline viewing
@@ -44,11 +45,9 @@ Multi-module Clean Architecture with feature modules.
 ### Offline Support
 
 Breeds are cached locally using Room with a network-first strategy:
-- **List**: Fetches from network if cache expired (24h TTL), falls back to cache on failure
+- **List**: Fetches from network in pages of 10, caches as it goes, falls back to cache on network failure
 - **Detail**: Cache-only (the API detail endpoint doesn't return images)
-- **Favorites**: Stored in a separate table, persisted across cache refreshes, reactive updates via Flow
-
-The 24h TTL was chosen due to the low variability of breed data.
+- **Favorites**: Stored in a separate table, persisted across app restarts, reactive updates via Flow
 
 ### Reactive Favorites
 
