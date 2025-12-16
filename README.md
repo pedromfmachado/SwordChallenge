@@ -69,12 +69,16 @@ Both List and Favorites screens observe Room Flows, so changes made from any scr
 
 # Screenshot tests
 ./gradlew validateDebugScreenshotTest
+
+# E2E tests (requires emulator or device)
+./gradlew :app:connectedDebugAndroidTest
 ```
 
 ### Test Types
 
 - **Unit tests** - ViewModel tests, Repository tests, Use Case tests, Mapper tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
+- **E2E tests** - Full app flow tests using Hilt + Compose UI Test (instrumented)
 
 ### Test Object Providers
 

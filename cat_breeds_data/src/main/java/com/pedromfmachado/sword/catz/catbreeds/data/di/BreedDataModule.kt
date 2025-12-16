@@ -10,8 +10,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class BreedDataModule {
+abstract class BreedDataModule {
     @Binds
     @Singleton
-    abstract fun bindBreedRepository(impl: BreedRepositoryImpl): BreedRepository
+    internal abstract fun bindBreedRepository(impl: BreedRepositoryImpl): BreedRepository
 }
