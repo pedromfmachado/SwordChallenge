@@ -1,8 +1,8 @@
 package com.pedromfmachado.sword.catz.catbreeds.domain.usecase
 
-import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
+import com.pedromfmachado.sword.catz.catbreeds.test.aBreed
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -15,20 +15,9 @@ class GetBreedsPageUseCaseTest {
     private val breedRepository = mock<BreedRepository>()
     private val useCase = GetBreedsPageUseCase(breedRepository)
 
-    private fun createBreed(id: String) = Breed(
-        id = id,
-        name = "Breed $id",
-        imageUrl = "https://example.com/$id.jpg",
-        origin = "Test",
-        temperament = "Test",
-        description = "Test",
-        lifespanLow = 10,
-        lifespanHigh = 15,
-    )
-
     @Test
-    fun `invoke returns hasMorePages true when result size equals pageSize`() = runTest {
-        val breeds = List(10) { createBreed(it.toString()) }
+    fun `returns hasMorePages true when result size equals pageSize`() = runTest {
+        val breeds = List(10) { aBreed(id = it.toString()) }
         whenever(breedRepository.getBreeds(0, 10)).thenReturn(Result.Success(breeds))
 
         val result = useCase(page = 0, pageSize = 10)
@@ -40,8 +29,8 @@ class GetBreedsPageUseCaseTest {
     }
 
     @Test
-    fun `invoke returns hasMorePages false when result size less than pageSize`() = runTest {
-        val breeds = List(5) { createBreed(it.toString()) }
+    fun `returns hasMorePages false when result size less than pageSize`() = runTest {
+        val breeds = List(5) { aBreed(id = it.toString()) }
         whenever(breedRepository.getBreeds(0, 10)).thenReturn(Result.Success(breeds))
 
         val result = useCase(page = 0, pageSize = 10)
@@ -53,7 +42,7 @@ class GetBreedsPageUseCaseTest {
     }
 
     @Test
-    fun `invoke returns error when repository fails`() = runTest {
+    fun `returns error when repository fails`() = runTest {
         val exception = RuntimeException("Network error")
         whenever(breedRepository.getBreeds(0, 10)).thenReturn(Result.Error(exception))
 
@@ -63,7 +52,7 @@ class GetBreedsPageUseCaseTest {
     }
 
     @Test
-    fun `invoke returns empty list with hasMorePages false for empty result`() = runTest {
+    fun `returns empty list with hasMorePages false for empty result`() = runTest {
         whenever(breedRepository.getBreeds(0, 10)).thenReturn(Result.Success(emptyList()))
 
         val result = useCase(page = 0, pageSize = 10)
