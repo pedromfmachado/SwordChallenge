@@ -73,8 +73,23 @@ Both List and Favorites screens observe Room Flows, so changes made from any scr
 
 ### Test Types
 
-- **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
+- **Unit tests** - ViewModel tests, Repository tests, Mapper tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
+
+### Test Object Providers
+
+Reusable test fixtures for creating domain and data objects:
+
+```kotlin
+// Domain layer (cat_breeds_api testFixtures)
+aBreed(id = "abc", name = "Persian", isFavorite = true)
+
+// Data layer (cat_breeds_data)
+aBreedDto(lifeSpan = "12 - 15")
+aBreedEntity(origin = "Egypt")
+```
+
+This reduces test boilerplate and ensures consistent defaults across all test files.
 
 ## Code Style
 

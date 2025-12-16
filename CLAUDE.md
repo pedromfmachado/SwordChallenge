@@ -140,11 +140,47 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 
 ## Testing
 
-- **Unit**: JUnit 4, Mockito, TestParameterInjector, Coroutines Test
+- **Unit**: JUnit 4, Mockito, Coroutines Test
 - **Compose UI**: Robolectric + Compose UI Test (JVM-based, no emulator needed)
 - **Screenshot**: Compose Preview Screenshot Testing (experimental)
   - Test location: `cat_breeds/src/screenshotTest/`
   - Reference images: `cat_breeds/src/screenshotTestDebug/reference/`
+
+### Test Object Providers
+
+Reusable test fixtures reduce boilerplate and ensure consistent defaults:
+
+| Provider | Location | Usage |
+|----------|----------|-------|
+| `aBreed()` | `cat_breeds_api/src/testFixtures/` | Domain model for all modules |
+| `aBreedDto()` | `cat_breeds_data/src/test/.../test/` | API DTOs |
+| `aBreedEntity()` | `cat_breeds_data/src/test/.../test/` | Room entities |
+
+To use `aBreed()` in a module, add `testImplementation(testFixtures(project(":cat_breeds_api")))` to its dependencies.
+
+### ViewModel Test Pattern
+
+ViewModels are tested with per-test instantiation due to `init` block side effects:
+
+```kotlin
+// Class-level default mocks
+private val repository: BreedRepository = mock {
+    onBlocking { getBreeds(any(), any()) } doReturn Result.Success(listOf(aBreed()))
+}
+
+@Test
+fun `loads breeds on init`() = runTest {
+    // Override mock behavior if needed
+    whenever(repository.getBreeds(any(), any())).thenReturn(Result.Success(breeds))
+
+    // Create ViewModel per-test (init triggers loading)
+    val viewModel = BreedListViewModel(repository, useCase)
+    advanceUntilIdle()
+
+    // Assert
+    assertEquals(2, (viewModel.uiState.value as Success).breeds.size)
+}
+```
 
 ## Conventions
 
