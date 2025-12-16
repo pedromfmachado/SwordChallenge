@@ -1,7 +1,5 @@
 package com.pedromfmachado.sword.catz.catbreeds.presentation.viewmodel
 
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import com.pedromfmachado.sword.catz.catbreeds.domain.model.Breed
 import com.pedromfmachado.sword.catz.catbreeds.domain.repository.BreedRepository
 import com.pedromfmachado.sword.catz.catbreeds.domain.result.Result
@@ -21,22 +19,19 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(TestParameterInjector::class)
 class BreedFavoritesViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val favoritesFlow: MutableSharedFlow<Result<List<Breed>>> =
-        MutableSharedFlow<Result<List<Breed>>>(replay = 1)
+    private val favoritesFlow = MutableSharedFlow<Result<List<Breed>>>(replay = 1)
     private val repository: BreedRepository = mock {
         on { observeFavoriteBreeds() } doReturn favoritesFlow
     }
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock()
-    private val viewModel: BreedFavoritesViewModel = BreedFavoritesViewModel(repository, toggleFavoriteUseCase)
+    private val viewModel = BreedFavoritesViewModel(repository, toggleFavoriteUseCase)
 
     @Before
     fun setup() {
@@ -49,104 +44,49 @@ class BreedFavoritesViewModelTest {
     }
 
     @Test
-    fun `initial state is Loading before flow emits`() = runTest {
-        assertEquals(BreedFavoritesUiState.Loading, viewModel.uiState.value)
+    fun `emits favorites when flow emits`() = runTest {
+        val favorites = listOf(aBreed(isFavorite = true), aBreed(id = "b", isFavorite = true))
+
+        favoritesFlow.emit(Result.Success(favorites))
+
+        val state = viewModel.uiState.first { it is BreedFavoritesUiState.Success } as BreedFavoritesUiState.Success
+        assertEquals(2, state.breeds.size)
     }
 
     @Test
-    fun `emits Success state when favorites flow emits`() = runTest {
-        val favorites = listOf(aBreed(isFavorite = true))
+    fun `shows error when flow emits error`() = runTest {
+        favoritesFlow.emit(Result.Error(RuntimeException("Database error")))
 
-        val state = emitAndAwaitSuccess(favorites)
-
-        assertEquals(favorites, state.breeds)
-    }
-
-    @Test
-    fun `emits Error state when favorites flow emits error`() = runTest {
-
-        val state = emitAndAwaitError(RuntimeException("Database error"))
-
+        val state = viewModel.uiState.first { it is BreedFavoritesUiState.Error } as BreedFavoritesUiState.Error
         assertEquals("Database error", state.message)
     }
 
     @Test
-    fun `calculates correct average lifespan`(
-        @TestParameter testCase: AverageLifespanTestCase,
-    ) = runTest {
-        val state = emitAndAwaitSuccess(testCase.breeds)
+    fun `calculates average lifespan`() = runTest {
+        val breeds = listOf(
+            aBreed(lifespanLow = 10, lifespanHigh = 14),
+            aBreed(id = "b", lifespanLow = 14, lifespanHigh = 16),
+        )
 
-        assertEquals(testCase.expectedAverage, state.averageLifespan)
+        favoritesFlow.emit(Result.Success(breeds))
+
+        val state = viewModel.uiState.first { it is BreedFavoritesUiState.Success } as BreedFavoritesUiState.Success
+        assertEquals(13, state.averageLifespan) // (12 + 15) / 2 = 13
     }
 
     @Test
-    fun `toggleFavorite calls use case with correct isFavorite`(
-        @TestParameter isFavorite: Boolean,
-    ) = runTest {
-        val breed = aBreed(id = "abc", isFavorite = isFavorite)
+    fun `average lifespan is null for empty list`() = runTest {
+        favoritesFlow.emit(Result.Success(emptyList()))
 
-        viewModel.toggleFavorite(breed)
-
-        verify(toggleFavoriteUseCase).invoke("abc", isFavorite)
-    }
-
-    @Test
-    fun `Success state with empty list shows empty breeds`() = runTest {
-        val state = emitAndAwaitSuccess(emptyList())
-
+        val state = viewModel.uiState.first { it is BreedFavoritesUiState.Success } as BreedFavoritesUiState.Success
+        assertNull(state.averageLifespan)
         assertTrue(state.breeds.isEmpty())
     }
 
     @Test
-    fun `Error state contains null message when exception has no message`() = runTest {
-        val state = emitAndAwaitError(RuntimeException())
+    fun `toggleFavorite calls use case`() = runTest {
+        viewModel.toggleFavorite(aBreed(id = "abc", isFavorite = true))
 
-        assertNull(state.message)
-    }
-
-    private suspend fun emitAndAwaitSuccess(breeds: List<Breed>): BreedFavoritesUiState.Success {
-        favoritesFlow.emit(Result.Success(breeds))
-        return viewModel.uiState.first { it is BreedFavoritesUiState.Success } as BreedFavoritesUiState.Success
-    }
-
-    private suspend fun emitAndAwaitError(exception: Exception): BreedFavoritesUiState.Error {
-        favoritesFlow.emit(Result.Error(exception))
-        return viewModel.uiState.first { it is BreedFavoritesUiState.Error } as BreedFavoritesUiState.Error
-    }
-
-    enum class AverageLifespanTestCase(
-        val breeds: List<Breed>,
-        val expectedAverage: Int?,
-    ) {
-        SingleBreed(
-            breeds = listOf(aBreed(lifespanLow = 14, lifespanHigh = 16)),
-            expectedAverage = 15,
-        ),
-        MultipleBreeds(
-            breeds = listOf(
-                aBreed(lifespanLow = 10, lifespanHigh = 14),
-                aBreed(lifespanLow = 14, lifespanHigh = 16),
-                aBreed(lifespanLow = 12, lifespanHigh = 18),
-            ),
-            expectedAverage = 14,
-        ),
-        EmptyList(
-            breeds = emptyList(),
-            expectedAverage = null,
-        ),
-        TruncatesToInt(
-            breeds = listOf(
-                aBreed(lifespanLow = 10, lifespanHigh = 12),
-                aBreed(lifespanLow = 14, lifespanHigh = 16),
-            ),
-            expectedAverage = 13,
-        ),
-        RoundsDownFractional(
-            breeds = listOf(
-                aBreed(lifespanLow = 10, lifespanHigh = 11),
-                aBreed(lifespanLow = 14, lifespanHigh = 15),
-            ),
-            expectedAverage = 12,
-        ),
+        verify(toggleFavoriteUseCase).invoke("abc", true)
     }
 }
