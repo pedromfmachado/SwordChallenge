@@ -23,7 +23,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class CatzE2ETest {
+class CatBreedsE2ETest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
