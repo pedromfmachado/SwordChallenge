@@ -116,14 +116,13 @@ class BreedListViewModel
         }
 
         private fun updateLoadedBreedsWithFavorites() {
-            for (i in loadedBreeds.indices) {
-                loadedBreeds[i] = loadedBreeds[i].copy(isFavorite = loadedBreeds[i].id in favoriteIds)
-            }
+            val updatedBreeds = applyFavoriteStatus(loadedBreeds)
+            loadedBreeds.clear()
+            loadedBreeds.addAll(updatedBreeds)
         }
 
-        private fun applyFavoriteStatus(breeds: List<Breed>): List<Breed> {
-            return breeds.map { it.copy(isFavorite = it.id in favoriteIds) }
-        }
+        private fun applyFavoriteStatus(breeds: List<Breed>): List<Breed> =
+            breeds.map { it.copy(isFavorite = it.id in favoriteIds) }
 
         private fun updateUiState() {
             val currentState = _uiState.value
@@ -131,12 +130,7 @@ class BreedListViewModel
                 return // Still in initial loading state
             }
 
-            val query = _searchQuery.value
-            val filteredBreeds = if (query.isBlank()) {
-                loadedBreeds.toList()
-            } else {
-                loadedBreeds.filter { it.name.contains(query, ignoreCase = true) }
-            }
+            val filteredBreeds = filterBreedsByName(loadedBreeds, _searchQuery.value)
 
             _uiState.value = BreedListUiState.Success(
                 breeds = filteredBreeds,
@@ -144,6 +138,9 @@ class BreedListViewModel
                 canLoadMore = hasMorePages && !isLoadingMore,
             )
         }
+
+        private fun filterBreedsByName(breeds: List<Breed>, query: String): List<Breed> =
+            if (query.isBlank()) breeds else breeds.filter { it.name.contains(query, ignoreCase = true) }
 
         fun toggleFavorite(breed: Breed) {
             viewModelScope.launch {

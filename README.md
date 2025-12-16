@@ -73,7 +73,7 @@ Both List and Favorites screens observe Room Flows, so changes made from any scr
 
 ### Test Types
 
-- **Unit tests** - Repository tests, UseCase tests, Compose UI tests (Robolectric)
+- **Unit tests** - Repository tests, Use Case tests, Compose UI tests (Robolectric)
 - **Screenshot tests** - Visual regression tests using Compose Preview Screenshot Testing
 
 ## Code Style

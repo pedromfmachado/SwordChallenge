@@ -46,10 +46,8 @@ class BreedFavoritesViewModel
         }
 
         private fun calculateAverageLifespan(breeds: List<Breed>): Int? {
-            return breeds.takeIf { it.isNotEmpty() }
-                ?.map { (it.lifespanLow + it.lifespanHigh) / 2.0 }
-                ?.average()
-                ?.toInt()
+            if (breeds.isEmpty()) return null
+            return breeds.map { (it.lifespanLow + it.lifespanHigh) / 2 }.average().toInt()
         }
     }
 
