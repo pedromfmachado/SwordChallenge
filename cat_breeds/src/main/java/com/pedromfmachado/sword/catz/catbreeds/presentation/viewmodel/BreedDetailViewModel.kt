@@ -16,48 +16,48 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BreedDetailViewModel
-    @Inject
-    constructor(
-        savedStateHandle: SavedStateHandle,
-        private val breedRepository: BreedRepository,
-        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    ) : ViewModel() {
-        private val breedId: String = checkNotNull(savedStateHandle[CatBreedsRoute.ARG_BREED_ID])
+class BreedDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val breedRepository: BreedRepository,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+) : ViewModel() {
+    private val breedId: String = checkNotNull(savedStateHandle[CatBreedsRoute.ARG_BREED_ID])
 
-        private val _uiState = MutableStateFlow<BreedDetailUiState>(BreedDetailUiState.Loading)
-        val uiState: StateFlow<BreedDetailUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<BreedDetailUiState>(BreedDetailUiState.Loading)
+    val uiState: StateFlow<BreedDetailUiState> = _uiState.asStateFlow()
 
-        init {
-            loadBreed()
-        }
+    init {
+        loadBreed()
+    }
 
-        private fun loadBreed() {
-            viewModelScope.launch {
-                _uiState.value = BreedDetailUiState.Loading
-                when (val result = breedRepository.getBreedById(breedId)) {
-                    is Result.Success -> _uiState.value = BreedDetailUiState.Success(result.data)
-                    is Result.Error -> _uiState.value = BreedDetailUiState.Error(result.exception.message)
-                }
+    private fun loadBreed() {
+        viewModelScope.launch {
+            _uiState.value = BreedDetailUiState.Loading
+            when (val result = breedRepository.getBreedById(breedId)) {
+                is Result.Success -> _uiState.value = BreedDetailUiState.Success(result.data)
+                is Result.Error -> _uiState.value = BreedDetailUiState.Error(result.exception.message)
             }
         }
+    }
 
-        fun toggleFavorite() {
-            val currentState = _uiState.value
-            if (currentState !is BreedDetailUiState.Success) return
+    fun toggleFavorite() {
+        val currentState = _uiState.value
+        if (currentState !is BreedDetailUiState.Success) return
 
-            val breed = currentState.breed
-            viewModelScope.launch {
-                when (val result = toggleFavoriteUseCase(breed.id, breed.isFavorite)) {
-                    is Result.Success -> {
-                        val updatedBreed = breed.copy(isFavorite = result.data)
-                        _uiState.value = BreedDetailUiState.Success(updatedBreed)
-                    }
-                    is Result.Error -> { /* Optionally show error */ }
+        val breed = currentState.breed
+        viewModelScope.launch {
+            when (val result = toggleFavoriteUseCase(breed.id, breed.isFavorite)) {
+                is Result.Success -> {
+                    val updatedBreed = breed.copy(isFavorite = result.data)
+                    _uiState.value = BreedDetailUiState.Success(updatedBreed)
+                }
+
+                is Result.Error -> { /* Optionally show error */
                 }
             }
         }
     }
+}
 
 sealed class BreedDetailUiState {
     data object Loading : BreedDetailUiState()
