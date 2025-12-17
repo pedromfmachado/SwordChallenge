@@ -383,6 +383,14 @@ The AI assisted with boilerplate generation, architecture decisions, and edge ca
 | **Claude Code + GitHub Actions** | Auto-implement PR feedback via AI integration. |
 | **TDD from the start** | Tests-first catches design issues earlier and ensures testability. |
 
+**CI Improvements:**
+| Improvement | Why |
+|-------------|-----|
+| **Screenshot Tests workflow** | Tests exist but aren't validated in CI. Would catch visual regressions on PRs. |
+| **E2E Tests workflow** | Run instrumented tests with `android-emulator-runner`. Full integration validation. |
+| **Build verification workflow** | Quick sanity check that APK compiles. Catches issues tests might miss. |
+| **Dependabot** | Automated dependency updates with grouped PRs (Compose, Kotlin). Low effort, ongoing value. |
+
 </details>
 
 <details>
