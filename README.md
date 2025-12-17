@@ -238,14 +238,14 @@ cat_breeds_api ← cat_breeds_data ← app
 |-----------------|-------------------|----------------|
 | `cat_breeds_api` | api → data → breeds → app | 22 |
 | `cat_breeds_data` | data → app (not breeds!) | 17 |
-| None (incremental) | None | 0 |
 
 <details>
 <summary><b>Build scan examples</b></summary>
 
-- [API module change](https://gradle.com/s/qtxtz3tmletny) — Cascades to all dependents
-- [Data module change](https://gradle.com/s/6xtdf55ene5cm) — Only affects data + app
-- [Incremental build](https://gradle.com/s/44fk72uesnuws) — Everything UP-TO-DATE
+These scans were run with `--no-build-cache` to isolate compiler behavior from cache hits.
+
+- [API module change](https://gradle.com/s/azo7yrfbrdp4m) — Cascades to all dependents
+- [Data module change](https://gradle.com/s/ltfs2nzukcwrm) — Only affects data + app
 
 <!-- TODO: Add screenshots showing task execution differences -->
 <!-- ![API Change Cascade](screenshots/build-api-change.png) -->
