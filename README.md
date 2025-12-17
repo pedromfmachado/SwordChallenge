@@ -1,48 +1,66 @@
-# Catz - Cat Breeds Browser
+<div align="center">
 
-[![Code Quality](https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml/badge.svg)](https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml)
-[![Unit Tests](https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml)
+# 🐱 Catz
 
-An Android app for browsing and favoriting cat breeds, built as a coding challenge for SWORD Health.
+**A modern Android app for browsing and favoriting cat breeds**
 
-## Screenshots
+*Built as a coding challenge for SWORD Health*
 
-<!-- TODO: Add screenshots or GIF demo -->
-| List | Detail | Favorites |
-|------|--------|-----------|
-| ![List](screenshots/list.png) | ![Detail](screenshots/detail.png) | ![Favorites](screenshots/favorites.png) |
+[![Code Quality][badge-quality]][ci-quality]
+[![Unit Tests][badge-tests]][ci-tests]
+![Android API](https://img.shields.io/badge/API-30%2B-brightgreen.svg)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple.svg)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-blue.svg)
 
-## Implementation
+[badge-quality]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml/badge.svg
+[badge-tests]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml/badge.svg
+[ci-quality]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml
+[ci-tests]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml
 
-- **Browse Breeds** - Paginated list of cat breeds with images, names, and origin
-- **Search** - Filter breeds by name with instant, debounced results
-- **Breed Details** - Detailed view with origin, temperament, lifespan, and description
-- **Favorites** - Mark breeds as favorites from any screen, persisted locally
-- **Average Lifespan** - Favorites screen displays the average lifespan of favorited breeds
-- **Offline Support** - Breeds are cached locally for offline viewing
+<br/>
 
-### Tech Stack
+<!-- Replace with your demo GIF -->
+<img src="screenshots/demo.gif" alt="App Demo" width="300"/>
 
-| Category | Technology |
-|----------|------------|
-| Language | Kotlin, Java 21 |
-| UI | Jetpack Compose, Material 3 |
-| Architecture | Multi-module Clean Architecture, MVVM |
-| DI | Hilt |
-| Networking | Retrofit, Moshi |
-| Database | Room |
-| Image Loading | Coil |
-| Navigation | Navigation Compose |
-| Testing | JUnit, Mockito, Robolectric, Compose UI Test, MockWebServer |
-| CI | GitHub Actions |
+</div>
 
-## Getting Started
+---
+
+## 📋 Table of Contents
+
+- [Quick Start](#-quick-start)
+- [Highlights](#-highlights)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Testing](#-testing)
+- [Decision Log](#-decision-log)
+- [Development Strategy](#-development-strategy)
+- [Improvements & Learnings](#-improvements--learnings)
+- [Easter Egg](#-easter-egg-i-made-an-ai-grade-its-own-homework)
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Add your API key (get one free at thecatapi.com)
+echo "CAT_API_KEY=your_api_key_here" >> local.properties
+
+# 2. Build and install
+./gradlew installDebug
+
+# 3. Run tests
+./gradlew testDebugUnitTest
+```
+
+<details>
+<summary>📖 Detailed setup instructions</summary>
 
 ### API Key Setup
 
 This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 
-1. Get a free API key from [thecatapi.com](https://thecatapi.com/signup)
+1. Get a free API key from [thecatapi.com/signup](https://thecatapi.com/signup)
 2. Add the key to `local.properties` in the project root:
    ```properties
    CAT_API_KEY=your_api_key_here
@@ -51,7 +69,7 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 
 > **Note:** `local.properties` is gitignored and should not be committed.
 
-### Build & Run
+### All Commands
 
 ```bash
 # Build
@@ -68,34 +86,152 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 ./gradlew lint                           # Android lint
 ```
 
-## Development Strategy
+</details>
 
-This project was developed using **[Claude Code](https://claude.ai/download)** as an AI pair-programming assistant. The workflow leveraged:
+---
 
-- **Git worktrees** - Isolated feature development without stashing or branch switching
-- **Iterative development** - Features implemented incrementally with continuous refinement
-- **Tests written post-implementation** - Not TDD; tests were added after features were working
+## ✨ Highlights
 
-The AI assisted with boilerplate generation, architecture decisions, and identifying edge cases, while I maintained control over design choices and code review.
+|  |  |
+|:---:|---|
+| 🏗️ | **Multi-module Clean Architecture** — 4 modules with pure Kotlin domain layer |
+| 🧪 | **4 Layers of Testing** — Unit, UI, Screenshot, and E2E tests |
+| 📴 | **Offline-First** — Network-first strategy with graceful cache fallback |
+| ⚡ | **Reactive Updates** — Room Flows for real-time sync across screens |
+| 🔄 | **Infinite Scroll** — Paginated list with seamless loading |
+| 🤖 | **AI-Assisted Development** — Built with Claude Code ([see Easter Egg](#-easter-egg-i-made-an-ai-grade-its-own-homework)) |
 
-## Testing Strategy
+---
 
-| Type | Tool | Purpose |
-|------|------|---------|
-| **Unit Tests** | JUnit, Mockito, Coroutines Test | ViewModels, Repository, UseCases, Mappers |
-| **Compose UI Tests** | Robolectric, Compose UI Test | Component behavior without emulator |
-| **Screenshot Tests** | Compose Preview Screenshot Testing | Visual regression, component library |
-| **E2E Tests** | Hilt, MockWebServer, Compose UI Test | Full user flows with controlled API |
+## 📱 Features
 
-### Why Robolectric for Compose Tests?
+| Feature | Description |
+|---------|-------------|
+| **Browse Breeds** | Paginated list with images, names, and origin |
+| **Search** | Instant filtering with debounced input |
+| **Breed Details** | Origin, temperament, lifespan, and description |
+| **Favorites** | Toggle from any screen, persisted locally |
+| **Average Lifespan** | Calculated across all favorited breeds |
+| **Offline Support** | Full functionality with cached data |
 
-Compose UI tests traditionally require an emulator or device, making them slow and flaky in CI. By using Robolectric, these tests run on the JVM with near-instant execution while still exercising real Compose rendering logic.
+### Tech Stack
 
-### Screenshot Tests as Component Library
+| Category | Technology |
+|----------|------------|
+| Language | Kotlin 2.0, Java 21 |
+| UI | Jetpack Compose, Material 3 |
+| Architecture | Multi-module Clean Architecture, MVVM |
+| DI | Hilt |
+| Networking | Retrofit, Moshi |
+| Database | Room |
+| Image Loading | Coil |
+| Navigation | Navigation Compose |
+| Testing | JUnit, Mockito, Robolectric, MockWebServer |
+| CI | GitHub Actions |
 
-Beyond regression testing, screenshot tests serve as a **visual catalog** of UI components. Each component has reference images that document its expected appearance across states (loading, error, empty, populated).
+---
 
-### Test Object Providers
+## 🏗️ Architecture
+
+Multi-module Clean Architecture with clear separation of concerns:
+
+```mermaid
+graph TD
+    subgraph "Presentation"
+        APP[🎯 app<br/><i>Navigation, DI, Entry point</i>]
+    end
+
+    subgraph "Feature"
+        FEAT[📱 cat_breeds<br/><i>ViewModels, UI, UseCases</i>]
+    end
+
+    subgraph "Data"
+        DATA[💾 cat_breeds_data<br/><i>Room, Retrofit, Mappers</i>]
+    end
+
+    subgraph "Domain"
+        API[📦 cat_breeds_api<br/><i>Pure Kotlin contracts</i>]
+    end
+
+    APP --> FEAT
+    APP --> DATA
+    FEAT --> API
+    DATA --> API
+
+    style API fill:#e8f5e9,stroke:#2e7d32
+    style APP fill:#fff3e0,stroke:#ef6c00
+    style FEAT fill:#e3f2fd,stroke:#1565c0
+    style DATA fill:#fce4ec,stroke:#c2185b
+```
+
+<details>
+<summary><b>Why Pure Kotlin for Domain?</b></summary>
+
+The `cat_breeds_api` module has **zero Android dependencies**:
+- ⚡ Fastest possible compilation (no Android plugin overhead)
+- 🔄 Domain models usable from any JVM context
+- 🛡️ Clear architectural boundary enforcement
+
+</details>
+
+<details>
+<summary><b>Offline Strategy</b></summary>
+
+| Screen | Strategy | Rationale |
+|--------|----------|-----------|
+| List | Network-first, cache fallback | Fresh data when online, graceful degradation offline |
+| Detail | Cache-only | API detail endpoint doesn't return images |
+| Favorites | Local-only | Stored in separate Room table |
+
+</details>
+
+<details>
+<summary><b>Reactive Favorites</b></summary>
+
+Favorites use a **separate table** rather than a column on breeds:
+- ✅ Preserves favorites when cache is refreshed
+- ✅ Enables reactive updates via Room Flows
+- ✅ Keeps API data separate from user preferences
+
+Both List and Favorites screens observe Room Flows — changes sync automatically.
+
+</details>
+
+---
+
+## 🧪 Testing
+
+<table>
+<tr>
+<td width="25%" align="center"><b>Unit</b><br/>ViewModels, Repository,<br/>UseCases, Mappers</td>
+<td width="25%" align="center"><b>UI</b><br/>Robolectric +<br/>Compose Test</td>
+<td width="25%" align="center"><b>Screenshot</b><br/>Visual regression<br/>& component catalog</td>
+<td width="25%" align="center"><b>E2E</b><br/>MockWebServer +<br/>Hilt + Room</td>
+</tr>
+</table>
+
+<details>
+<summary><b>Why Robolectric for Compose Tests?</b></summary>
+
+Compose UI tests traditionally require an emulator, making them slow and flaky. With Robolectric:
+- ⚡ Tests run on JVM with near-instant execution
+- ✅ Still exercises real Compose rendering logic
+- 🔄 CI-friendly without emulator overhead
+
+</details>
+
+<details>
+<summary><b>Screenshot Tests as Component Library</b></summary>
+
+Beyond regression testing, screenshots serve as a **visual catalog**:
+- Each component has reference images documenting expected appearance
+- States covered: loading, error, empty, populated
+- Acts as living documentation for the design system
+
+</details>
+
+<details>
+<summary><b>Test Object Providers</b></summary>
 
 Reusable fixtures reduce boilerplate and ensure consistent defaults:
 
@@ -105,87 +241,65 @@ aBreedDto(lifeSpan = "12 - 15")                          // API
 aBreedEntity(origin = "Egypt")                            // Database
 ```
 
-## Architecture
+</details>
 
-Multi-module Clean Architecture with four modules:
+---
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                           app                               │
-│              (Navigation, DI wiring, Entry point)           │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-          ┌───────────────┴───────────────┐
-          ▼                               ▼
-┌─────────────────────┐       ┌─────────────────────┐
-│    cat_breeds       │       │   cat_breeds_data   │
-│  (Feature module)   │       │   (Data layer)      │
-│  ViewModels, UI     │       │  Room, Retrofit     │
-└─────────┬───────────┘       └─────────┬───────────┘
-          │                             │
-          └───────────────┬─────────────┘
-                          ▼
-              ┌─────────────────────┐
-              │   cat_breeds_api    │
-              │   (Pure Kotlin)     │
-              │  Domain contracts   │
-              └─────────────────────┘
-```
+## 📝 Decision Log
 
-### Why Pure Kotlin for Domain?
-
-The `cat_breeds_api` module has **zero Android dependencies**. This provides:
-- Fastest possible compilation (no Android plugin overhead)
-- Domain models and interfaces usable from any JVM context
-- Clear architectural boundary enforcement
-
-### Offline Strategy
-
-| Screen | Strategy | Rationale |
-|--------|----------|-----------|
-| List | Network-first, cache fallback | Fresh data when online, graceful degradation offline |
-| Detail | Cache-only | API detail endpoint doesn't return images |
-| Favorites | Local-only | Stored in separate Room table |
-
-### Reactive Favorites
-
-Favorites are stored in a **separate table** rather than a column on the breeds table. This design:
-- Preserves favorites when the breeds cache is refreshed
-- Enables reactive updates via Room Flows
-- Keeps API data separate from user preferences
-
-Both List and Favorites screens observe Room Flows, so changes from any screen are automatically reflected everywhere.
-
-## Decision Log
+<details>
+<summary><b>View all technical decisions</b></summary>
 
 | Decision | Rationale |
 |----------|-----------|
-| **Robolectric for Compose tests** | Enables fast, reliable UI tests on JVM without emulator overhead. CI-friendly and maintains test confidence. |
-| **Screenshot testing** | Provides visual component documentation and catches unintended UI changes. Acts as a living style guide. |
-| **Local-only favorites** | The Cat API only supports favoriting images (not breeds), so local storage was the pragmatic choice for breed-level favorites. |
-| **Cache-only detail screen** | The `/breeds/:breed_id` endpoint doesn't return images. Using cached data from the list ensures images are available. |
-| **ViewModels access Repository directly** | Most operations lack business logic beyond CRUD. Adding UseCases for simple pass-through calls would add indirection without value. `ToggleFavoriteUseCase` exists because toggling has actual logic. |
-| **No TDD** | Prioritized velocity for this challenge. Tests were added after implementation to validate behavior rather than drive design. |
+| **Robolectric for Compose tests** | Fast, reliable UI tests on JVM. CI-friendly without emulator overhead. |
+| **Screenshot testing** | Visual component documentation + catches unintended UI changes. Living style guide. |
+| **Local-only favorites** | Cat API only supports favoriting images (not breeds). Local storage was pragmatic. |
+| **Cache-only detail screen** | `/breeds/:breed_id` doesn't return images. Cached list data ensures images available. |
+| **ViewModels → Repository directly** | Most operations lack business logic. UseCases for pass-through adds noise. `ToggleFavoriteUseCase` exists because it has real logic. |
+| **No TDD** | Prioritized velocity for challenge. Tests added post-implementation to validate behavior. |
 
-## Improvements
+</details>
 
-If I were to continue developing this project:
+---
+
+## 🛠️ Development Strategy
+
+This project was developed using **[Claude Code](https://claude.ai/download)** as an AI pair-programming assistant:
+
+- **Git worktrees** — Isolated feature development without stashing
+- **Iterative development** — Features implemented incrementally with continuous refinement
+- **Tests post-implementation** — Not TDD; tests added after features working
+
+The AI assisted with boilerplate generation, architecture decisions, and edge case identification. I maintained control over design choices and code review.
+
+---
+
+## 🔮 Improvements & Learnings
+
+<details>
+<summary><b>What I'd improve</b></summary>
 
 | Improvement | Why |
 |-------------|-----|
-| **Replace Screenshot Testing with Roborazzi** | Compose Preview Screenshot Testing is experimental and awkward to run in CI. Roborazzi leverages Robolectric (already in use) and has better tooling. |
-| **Adopt Paging 3 with RemoteMediator** | Would handle network/database coordination automatically, replacing manual pagination logic. Better separation of concerns. |
-| **GitHub Actions + Claude Code integration** | Configure Claude Code to respond to PR comments and implement suggested changes automatically. |
-| **TDD from the start** | Writing tests first would catch design issues earlier and ensure testability is baked in, not bolted on. |
+| **Roborazzi over Screenshot Testing** | Compose Preview Screenshot Testing is experimental and awkward in CI. Roborazzi + Robolectric is more mature. |
+| **Paging 3 with RemoteMediator** | Would handle network/database coordination automatically. Better separation of concerns. |
+| **Claude Code + GitHub Actions** | Auto-implement PR feedback via AI integration. |
+| **TDD from the start** | Tests-first catches design issues earlier and ensures testability. |
 
-## Learnings
+</details>
 
-Things I discovered (or re-learned) during this project:
+<details>
+<summary><b>What I learned</b></summary>
 
 | Learning | Context |
 |----------|---------|
-| **Stale cache risk in detail view** | There's no mechanism to refresh cached data when viewing details. If the API data changed since the list was fetched, the detail screen shows outdated information. |
-| **Configure linting early** | Adding ktlint late in development meant fixing hundreds of style issues at once. Setting it up from day one (with pre-commit hooks) would have been much smoother. |
+| **Stale cache risk** | Detail view has no refresh mechanism. If API data changed since list fetch, detail shows outdated info. |
+| **Configure linting early** | Adding ktlint late meant fixing hundreds of issues at once. Day-one setup with pre-commit hooks is smoother. |
+
+</details>
+
+---
 
 ## 🥚 Easter Egg: I Made an AI Grade Its Own Homework
 
@@ -193,21 +307,34 @@ This project was built with [Claude Code](https://claude.ai/download), and becau
 
 Then I pointed it at this repo.
 
-Yes, I made an AI review the code it helped write. Yes, it rated me as "Senior Developer with 90% confidence." No, I did not bribe it with extra GPU cycles.
+Yes, I made an AI review the code it helped write. Yes, it rated me as **"Senior Developer with 90% confidence."** No, I did not bribe it with extra GPU cycles.
 
-**[See the full evaluation report](./EVALUATION_SAMPLE.md)** - complete with interview questions designed to expose whether I actually understand my own code. *Spoiler: I'm mildly terrified to answer some of them.*
+**📄 [See the full evaluation report](./EVALUATION_SAMPLE.md)** — complete with interview questions designed to expose whether I actually understand my own code.
 
-### What This Actually Demonstrates
+*Spoiler: I'm mildly terrified to answer some of them.*
 
-Beyond the obvious narcissism, this showcases:
-- **Custom Claude Code skills** - Structured workflows with multi-phase evaluation
-- **Prompt engineering** - Defining rubrics, output formats, and evaluation criteria
-- **Self-awareness** - Knowing that any interviewer reading this is now 100% going to ask me those questions
+<details>
+<summary><b>What this actually demonstrates</b></summary>
 
-The skill lives in `.claude/skills/catz-challenge-evaluator/` if you want to see how the sausage is made. Or run it yourself if you have Claude Code:
+Beyond the obvious narcissism:
+- **Custom Claude Code skills** — Structured workflows with multi-phase evaluation
+- **Prompt engineering** — Defining rubrics, output formats, evaluation criteria
+- **Self-awareness** — Any interviewer reading this will 100% ask me those questions
+
+The skill lives in `.claude/skills/catz-challenge-evaluator/`. Run it yourself:
 
 ```
 evaluate this challenge
 ```
 
 *The AI also generated "AI-detection probes" to verify code ownership. I'm choosing to interpret this as the machine developing trust issues, which frankly is fair.*
+
+</details>
+
+---
+
+<div align="center">
+
+**Built with 🐱 and [Claude Code](https://claude.ai/download)**
+
+</div>
