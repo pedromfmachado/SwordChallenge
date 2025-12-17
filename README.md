@@ -213,20 +213,20 @@ Gradle compiles independent modules simultaneously across available CPU cores. W
 | Sequential | ~20s |
 | Parallel | ~18s |
 
-> **Note:** The time difference is modest for this small project (~10%), but the **Timeline view** in the build scans clearly shows tasks executing in parallel. These benefits compound significantly in larger codebases with more independent modules.
+> **Note:** The time difference is modest for this small project (~10%), but the **Timeline view** in the build scans clearly shows modules executing in parallel vs sequentially. These benefits compound significantly in larger codebases with more independent modules.
 
 <details>
 <summary><b>Build scan comparison</b></summary>
 
-- [Sequential build scan](https://gradle.com/s/xz24c7dso5px2) — Tasks execute one after another
-- [Parallel build scan](https://gradle.com/s/yi34ue2onzkks) — Multiple workers process independent tasks
+- [Sequential build scan](https://gradle.com/s/xz24c7dso5px2) — Modules execute one after another
+- [Parallel build scan](https://gradle.com/s/yi34ue2onzkks) — Independent modules execute simultaneously
 
 Commands used:
 ```bash
-# Sequential
+# Sequential (modules wait for each other)
 ./gradlew clean assembleDebug --no-parallel --no-build-cache --no-daemon --scan
 
-# Parallel
+# Parallel (independent modules run simultaneously)
 ./gradlew clean assembleDebug --parallel --no-build-cache --no-daemon --scan
 ```
 
