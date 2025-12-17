@@ -221,6 +221,14 @@ Gradle compiles independent modules simultaneously across available CPU cores. W
 - [Sequential build scan](https://gradle.com/s/xz24c7dso5px2) — Modules execute one after another
 - [Parallel build scan](https://gradle.com/s/yi34ue2onzkks) — Independent modules execute simultaneously
 
+**Sequential** — modules wait for each other:
+
+![Sequential Timeline](screenshots/build-parallel-timeline.png)
+
+**Parallel** — independent modules execute simultaneously:
+
+![Parallel Timeline](screenshots/build-sequential-timeline.png)
+
 Commands used:
 ```bash
 # Sequential (modules wait for each other)
@@ -229,9 +237,6 @@ Commands used:
 # Parallel (independent modules run simultaneously)
 ./gradlew clean assembleDebug --parallel --no-build-cache --no-daemon --scan
 ```
-
-<!-- TODO: Add screenshot showing timeline comparison -->
-<!-- ![Parallel vs Sequential](screenshots/build-parallel-comparison.png) -->
 
 </details>
 
@@ -256,15 +261,19 @@ cat_breeds_api ← cat_breeds_data ← app
 - [API module change](https://gradle.com/s/azo7yrfbrdp4m) — Cascades to all dependents
 - [Data module change](https://gradle.com/s/ltfs2nzukcwrm) — Only affects data + app
 
+**API module change** — Both `cat_breeds` and `cat_breeds_data` recompile (22 tasks executed):
+
+![API Change Performance](screenshots/build-api-change-performance.png)
+
+**Data module change** — Only `cat_breeds_data` recompiles, `cat_breeds` is skipped (17 tasks executed):
+
+![Data Change Performance](screenshots/build-data-change-performance.png)
+
 Commands used:
 ```bash
 # After making an ABI change (e.g., adding a property) to a module:
 ./gradlew assembleDebug --no-build-cache --scan
 ```
-
-<!-- TODO: Add screenshots showing task execution differences -->
-<!-- ![API Change Cascade](screenshots/build-api-change.png) -->
-<!-- ![Data Change Isolation](screenshots/build-data-change.png) -->
 
 </details>
 
