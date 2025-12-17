@@ -143,6 +143,11 @@ class BreedListViewModel @Inject constructor(
             isLoadingMore = isLoadingMore,
             canLoadMore = hasMorePages && !isLoadingMore,
         )
+
+        // Auto-load more pages when searching and results are sparse
+        if (query.isNotBlank() && filteredBreeds.size < PAGE_SIZE && hasMorePages && !isLoadingMore) {
+            loadNextPage()
+        }
     }
 
     fun toggleFavorite(breed: Breed) {

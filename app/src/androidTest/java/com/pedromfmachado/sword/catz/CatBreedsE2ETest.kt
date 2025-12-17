@@ -2,11 +2,13 @@ package com.pedromfmachado.sword.catz
 
 import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
@@ -129,5 +131,29 @@ class CatBreedsE2ETest {
 
         // Verify lifespan is displayed
         composeTestRule.onNodeWithText("14 - 15 years").assertIsDisplayed()
+    }
+
+    @Test
+    fun searchFiltersBreedsByName() {
+        // Wait for the list to load
+        waitForBreedsList()
+
+        // Verify all breeds are initially displayed
+        composeTestRule.onNodeWithText("Abyssinian").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Bengal").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Persian").assertIsDisplayed()
+
+        // Type in the search field
+        composeTestRule.onNodeWithText("Search breeds…").performTextInput("Ben")
+
+        // Wait for debounce and filtering
+        composeTestRule.waitUntil {
+            composeTestRule.onAllNodes(hasText("Abyssinian")).fetchSemanticsNodes().isEmpty()
+        }
+
+        // Verify only matching breed is displayed
+        composeTestRule.onNodeWithText("Bengal").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Abyssinian").assertIsNotDisplayed()
+        composeTestRule.onNodeWithText("Persian").assertIsNotDisplayed()
     }
 }
