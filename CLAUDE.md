@@ -140,6 +140,30 @@ Favorites are stored in a **separate `favorites` table** (not as a column on the
 - CI runs both `ktlintCheck` and Android `lint` on PRs and main
 - **Before committing**: Run `./gradlew ktlintCheck` and fix any issues with `./gradlew ktlintFormat`
 
+## CI/CD
+
+GitHub Actions workflows in `.github/workflows/`:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `code-quality.yml` | Push/PR to main | ktlint and Android lint checks |
+| `unit-tests.yml` | Push/PR to main | Run unit tests |
+| `release.yml` | Manual (workflow_dispatch) | Build APK and create GitHub Release |
+
+### Release Workflow
+
+The release workflow builds a debug APK with the API key embedded and attaches it to a GitHub Release:
+
+1. Go to **Actions** > **Release** > **Run workflow**
+2. Enter version number (e.g., `1.0.0`)
+3. Workflow creates tag `v1.0.0`, builds APK, creates GitHub Release
+
+**Required secret:** `CAT_API_KEY` - The Cat API key (added in repository settings)
+
+**API key injection:** The build accepts the API key from either:
+- Environment variable `CAT_API_KEY` (CI)
+- `local.properties` file (local development)
+
 ## Testing
 
 - **Unit**: JUnit 4, Mockito, Coroutines Test
@@ -234,7 +258,8 @@ Location: `.claude/skills/catz-challenge-evaluator/`
 
 - `gradle/libs.versions.toml` - Dependencies
 - `settings.gradle.kts` - Module includes
-- `app/build.gradle.kts` - App config (includes API key BuildConfig)
+- `app/build.gradle.kts` - App config (API key from env var or local.properties)
+- `.github/workflows/release.yml` - Release workflow (manual trigger, creates GitHub Release)
 - `app/src/main/java/.../di/BaseNetworkModule.kt` - Base networking DI
 - `cat_breeds_api/src/main/java/.../domain/model/Breed.kt` - Breed model
 - `cat_breeds_api/src/main/java/.../domain/repository/BreedRepository.kt` - Repository interface

@@ -8,14 +8,17 @@
 
 [![Code Quality][badge-quality]][ci-quality]
 [![Unit Tests][badge-tests]][ci-tests]
+[![Release][badge-release]][ci-release]
 ![Android API](https://img.shields.io/badge/API-30%2B-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple.svg)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-blue.svg)
 
 [badge-quality]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml/badge.svg
 [badge-tests]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml/badge.svg
+[badge-release]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/release.yml/badge.svg
 [ci-quality]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/code-quality.yml
 [ci-tests]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/unit-tests.yml
+[ci-release]: https://github.com/pedromfmachado/SwordChallenge/actions/workflows/release.yml
 
 <br/>
 
@@ -69,6 +72,8 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 
 > **Note:** `local.properties` is gitignored and should not be committed.
 
+For CI builds, the API key is injected via the `CAT_API_KEY` environment variable.
+
 ### All Commands
 
 ```bash
@@ -85,6 +90,18 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 ./gradlew ktlintFormat                   # Fix style issues
 ./gradlew lint                           # Android lint
 ```
+
+### Releasing
+
+Releases are created via GitHub Actions with a manual trigger:
+
+1. Go to **Actions** > **Release** > **Run workflow**
+2. Enter a version number (e.g., `1.0.0`)
+3. Click **Run workflow**
+
+The workflow builds a debug APK with the API key embedded (from GitHub Secrets) and creates a GitHub Release with the APK attached.
+
+> **Note:** This produces a debug build for demonstration purposes. Production releases would use a signed release build.
 
 </details>
 
@@ -127,7 +144,7 @@ This app uses [The Cat API](https://thecatapi.com/) to fetch breed data.
 | Image Loading | Coil |
 | Navigation | Navigation Compose |
 | Testing | JUnit, Mockito, Robolectric, MockWebServer |
-| CI | GitHub Actions |
+| CI/CD | GitHub Actions (lint, tests, releases) |
 
 ---
 

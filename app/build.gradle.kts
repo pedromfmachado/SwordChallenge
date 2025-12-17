@@ -26,13 +26,15 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // Load API key from local.properties
+        // Load API key from environment variable (CI) or local.properties (local dev)
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
             localProperties.load(localPropertiesFile.inputStream())
         }
-        val catApiKey = localProperties.getProperty("CAT_API_KEY") ?: ""
+        val catApiKey = System.getenv("CAT_API_KEY")
+            ?: localProperties.getProperty("CAT_API_KEY")
+            ?: ""
         buildConfigField("String", "CAT_API_KEY", "\"$catApiKey\"")
 
         testInstrumentationRunner = "com.pedromfmachado.sword.catz.HiltTestRunner"
