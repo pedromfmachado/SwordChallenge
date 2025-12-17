@@ -301,33 +301,26 @@ The AI assisted with boilerplate generation, architecture decisions, and edge ca
 
 ---
 
-## 🥚 Easter Egg: I Made an AI Grade Its Own Homework
+## 🥚 Easter Egg: Challenge Evaluator Skill
 
-This project was built with [Claude Code](https://claude.ai/download), and because I apparently have too much free time, I created a custom skill that evaluates coding challenge submissions.
+This project was built with [Claude Code](https://claude.ai/download). To demonstrate custom skill creation, I built an evaluator that assesses coding challenge submissions against structured criteria.
 
-Then I pointed it at this repo.
+Then I ran it on this repo. It rated the submission as **"Senior Developer with 90% confidence."**
 
-Yes, I made an AI review the code it helped write. Yes, it rated me as **"Senior Developer with 90% confidence."** No, I did not bribe it with extra GPU cycles.
-
-**📄 [See the full evaluation report](./EVALUATION_SAMPLE.md)** — complete with interview questions designed to expose whether I actually understand my own code.
-
-*Spoiler: I'm mildly terrified to answer some of them.*
+**📄 [See the full evaluation report](./EVALUATION_SAMPLE.md)** — includes interview questions and technical deep-dives.
 
 <details>
-<summary><b>What this actually demonstrates</b></summary>
+<summary><b>What this demonstrates</b></summary>
 
-Beyond the obvious narcissism:
 - **Custom Claude Code skills** — Structured workflows with multi-phase evaluation
-- **Prompt engineering** — Defining rubrics, output formats, evaluation criteria
-- **Self-awareness** — Any interviewer reading this will 100% ask me those questions
+- **Prompt engineering** — Defining rubrics, output formats, and evaluation criteria
+- **Practical AI tooling** — Building useful automation beyond just code generation
 
-The skill lives in `.claude/skills/catz-challenge-evaluator/`. Run it yourself:
+The skill lives in `.claude/skills/catz-challenge-evaluator/`. Run it yourself if you have Claude Code:
 
 ```
 evaluate this challenge
 ```
-
-*The AI also generated "AI-detection probes" to verify code ownership. I'm choosing to interpret this as the machine developing trust issues, which frankly is fair.*
 
 </details>
 
