@@ -32,6 +32,7 @@
 - [Highlights](#-highlights)
 - [Features](#-features)
 - [Architecture](#-architecture)
+- [Build Performance](#-build-performance)
 - [Testing](#-testing)
 - [Decision Log](#-decision-log)
 - [Development Strategy](#-development-strategy)
@@ -199,6 +200,78 @@ Both List and Favorites screens observe Room Flows — changes sync automaticall
 
 ---
 
+## ⚡ Build Performance
+
+The multi-module architecture delivers measurable build performance benefits through **parallel compilation** and **compilation avoidance**.
+
+### Parallel Compilation
+
+Gradle compiles independent modules simultaneously across available CPU cores. With our 4-module structure, `cat_breeds` and `cat_breeds_data` compile in parallel since they only share `cat_breeds_api` as a common dependency.
+
+| Build Type | Time | Speedup |
+|------------|------|---------|
+| Sequential | ~67s | — |
+| Parallel | ~8s | **~8x faster** |
+
+<details>
+<summary><b>Build scan comparison</b></summary>
+
+- [Sequential build scan](https://gradle.com/s/lw5qwonj2dcgk) — Tasks execute one after another
+- [Parallel build scan](https://gradle.com/s/trx77sbcypurk) — Multiple workers process independent tasks
+
+<!-- TODO: Add screenshot showing timeline comparison -->
+<!-- ![Parallel vs Sequential](screenshots/build-parallel-comparison.png) -->
+
+</details>
+
+### Compilation Avoidance
+
+Kotlin's compilation avoidance skips recompilation when a module's ABI (Application Binary Interface) hasn't changed. More importantly, changes in one module only trigger recompilation of **dependent modules**, not siblings.
+
+```
+cat_breeds_api ← cat_breeds_data ← app
+      ↑                            ↑
+      └──── cat_breeds ────────────┘
+```
+
+| Change Location | Modules Recompiled | Tasks Executed |
+|-----------------|-------------------|----------------|
+| `cat_breeds_api` | api → data → breeds → app | 22 |
+| `cat_breeds_data` | data → app (not breeds!) | 17 |
+| None (incremental) | None | 0 |
+
+<details>
+<summary><b>Build scan examples</b></summary>
+
+- [API module change](https://gradle.com/s/qtxtz3tmletny) — Cascades to all dependents
+- [Data module change](https://gradle.com/s/6xtdf55ene5cm) — Only affects data + app
+- [Incremental build](https://gradle.com/s/44fk72uesnuws) — Everything UP-TO-DATE
+
+<!-- TODO: Add screenshots showing task execution differences -->
+<!-- ![API Change Cascade](screenshots/build-api-change.png) -->
+<!-- ![Data Change Isolation](screenshots/build-data-change.png) -->
+
+</details>
+
+<details>
+<summary><b>Gradle configuration</b></summary>
+
+These optimizations are enabled in `gradle.properties`:
+
+```properties
+# Parallel module compilation
+org.gradle.parallel=true
+
+# Build cache for incremental builds
+org.gradle.caching=true
+```
+
+The [Develocity plugin](https://gradle.com/develocity/) is configured in `settings.gradle.kts` for build scan publishing.
+
+</details>
+
+---
+
 ## 🧪 Testing
 
 <table>
@@ -307,7 +380,9 @@ This project was built with [Claude Code](https://claude.ai/download). To demons
 
 Then I ran it on this repo. It rated the submission as **"Senior Developer with 90% confidence."**
 
-**📄 [See the full evaluation report](./EVALUATION_SAMPLE.md)** — includes interview questions and technical deep-dives.
+*(I swear I didn't tweak the rubric.)*
+
+**📄 [See the full evaluation report](./EVALUATION_SAMPLE.md)** — includes interview questions that I'm now fully expecting to be asked.
 
 <details>
 <summary><b>What this demonstrates</b></summary>
