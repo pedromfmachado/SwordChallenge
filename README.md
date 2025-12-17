@@ -262,11 +262,11 @@ cat_breeds_api ← cat_breeds_data ← app
 
 **API module change** — Both `cat_breeds` and `cat_breeds_data` recompile (22 tasks executed):
 
-![API Change Performance](screenshots/build-api-change-performance.png)
+<img src="screenshots/build-api-change-performance.png" alt="API Change Performance" width="400" style="border: 1px solid #ccc; border-radius: 4px;"/>
 
 **Data module change** — Only `cat_breeds_data` recompiles, `cat_breeds` is skipped (17 tasks executed):
 
-![Data Change Performance](screenshots/build-data-change-performance.png)
+<img src="screenshots/build-data-change-performance.png" alt="Data Change Performance" width="400" style="border: 1px solid #ccc; border-radius: 4px;"/>
 
 Commands used:
 ```bash
