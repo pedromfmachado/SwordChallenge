@@ -19,7 +19,7 @@
 
 <br/>
 
-<video src="screenshots/demo.mp4" alt="App Demo" width="300" autoplay loop muted></video>
+<video src="https://github.com/user-attachments/assets/d0622adc-4e80-4189-8b0c-bcb38c8bba5d" alt="App Demo" width="300" autoplay loop muted></video>
 
 </div>
 
@@ -222,11 +222,11 @@ Gradle compiles independent modules simultaneously across available CPU cores. W
 
 **Sequential** — modules wait for each other:
 
-![Sequential Timeline](screenshots/build-parallel-timeline.png)
+<img src="screenshots/build-sequential-timeline.png" alt="Sequential Timeline" width="400" style="border: 1px solid #ccc; border-radius: 4px;"/>
 
 **Parallel** — independent modules execute simultaneously:
 
-![Parallel Timeline](screenshots/build-sequential-timeline.png)
+<img src="screenshots/build-parallel-timeline.png" alt="Parallel Timeline" width="400" style="border: 1px solid #ccc; border-radius: 4px;"/>
 
 Commands used:
 ```bash
