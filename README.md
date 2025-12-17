@@ -19,8 +19,7 @@
 
 <br/>
 
-<!-- Replace with your demo GIF -->
-<img src="screenshots/demo.gif" alt="App Demo" width="300"/>
+<video src="screenshots/demo.mp4" alt="App Demo" width="300" autoplay loop muted></video>
 
 </div>
 
