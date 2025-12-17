@@ -39,7 +39,7 @@
 - [Decision Log](#-decision-log)
 - [Development Strategy](#-development-strategy)
 - [Improvements & Learnings](#-improvements--learnings)
-- [Easter Egg](#-easter-egg-i-made-an-ai-grade-its-own-homework)
+- [Easter Egg](#-easter-egg-challenge-evaluator-skill)
 
 ---
 
@@ -116,20 +116,57 @@ The workflow builds a debug APK with the API key embedded (from GitHub Secrets) 
 | 📴 | **Offline-First** — Network-first strategy with graceful cache fallback |
 | ⚡ | **Reactive Updates** — Room Flows for real-time sync across screens |
 | 🔄 | **Infinite Scroll** — Paginated list with seamless loading |
-| 🤖 | **AI-Assisted Development** — Built with Claude Code ([see Easter Egg](#-easter-egg-i-made-an-ai-grade-its-own-homework)) |
+| 🤖 | **AI-Assisted Development** — Built with Claude Code ([see Easter Egg](#-easter-egg-challenge-evaluator-skill)) |
 
 ---
 
 ## 📱 Features
 
-| Feature | Description |
-|---------|-------------|
-| **Browse Breeds** | Paginated list with images, names, and origin |
-| **Search** | Instant filtering with debounced input |
-| **Breed Details** | Origin, temperament, lifespan, and description |
-| **Favorites** | Toggle from any screen, persisted locally |
-| **Average Lifespan** | Calculated across all favorited breeds |
-| **Offline Support** | Full functionality with cached data |
+This section distinguishes between the challenge requirements, bonus points, and features I added to demonstrate breadth across the software development spectrum.
+
+### ✅ Challenge Requirements
+
+All functional and technical requirements from the challenge specification:
+
+| Requirement | Implementation |
+|-------------|----------------|
+| **Breed list with image & name** | `ListScreen` with `BreedListItem` composable |
+| **Search bar to filter by name** | Debounced search with in-memory filtering |
+| **Favorite button on list** | Heart icon toggle on each list item |
+| **Favorites screen with avg lifespan** | `FavoritesScreen` calculates average from favorited breeds |
+| **Detail screen** (name, origin, temperament, description, favorite button) | `DetailScreen` with all required fields |
+| **Jetpack Navigation Component** | Nested NavHosts with type-safe routes |
+| **MVVM architecture** | ViewModels with StateFlow and sealed UiState classes |
+| **Jetpack Compose UI** | Material 3 with Compose BOM 2025.12.00 |
+| **Unit test coverage** | ViewModels, Repository, UseCases, Mappers |
+| **Offline functionality (Room)** | Network-first with cache fallback strategy |
+
+### ⭐ Bonus Points (All Implemented)
+
+| Bonus | Implementation |
+|-------|----------------|
+| **Error Handling** | `Result` sealed class, UI error states, graceful degradation |
+| **Pagination** | Infinite scroll with page size of 10, loads more near end |
+| **Modular design** | 4-module Clean Architecture (see [Architecture](#-architecture)) |
+| **Integration & E2E tests** | MockWebServer + Hilt + Room instrumented tests |
+
+### 🚀 Beyond Requirements
+
+Features added to demonstrate knowledge across the software development spectrum:
+
+| Feature | Purpose | Implementation |
+|---------|---------|----------------|
+| **Pure Kotlin domain module** | Build performance, architectural boundaries | `cat_breeds_api` has zero Android dependencies |
+| **Reactive favorites** | Real-time sync across screens | Room Flows with separate favorites table |
+| **Screenshot testing** | Visual regression + component catalog | Compose Preview Screenshot Testing |
+| **Robolectric UI tests** | Fast, CI-friendly Compose testing | JVM-based UI tests without emulator |
+| **CI/CD pipelines** | Automated quality gates | GitHub Actions for lint, tests, releases |
+| **Automated releases** | One-click APK distribution | Workflow creates GitHub Release with APK |
+| **Build performance analysis** | Demonstrate multi-module benefits | Gradle build scans with parallel/avoidance metrics |
+| **Code style enforcement** | Consistent codebase | ktlint with `.editorconfig` |
+| **Localization** | i18n readiness | English (default) + Portuguese |
+| **Test fixtures** | Maintainable test code | `aBreed()`, `aBreedDto()`, `aBreedEntity()` providers |
+| **Claude Code skill** | AI tooling capabilities | Custom evaluator skill (see [Easter Egg](#-easter-egg-challenge-evaluator-skill)) |
 
 ### Tech Stack
 
