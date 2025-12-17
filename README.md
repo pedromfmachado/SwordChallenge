@@ -208,16 +208,27 @@ The multi-module architecture delivers measurable build performance benefits thr
 
 Gradle compiles independent modules simultaneously across available CPU cores. With our 4-module structure, `cat_breeds` and `cat_breeds_data` compile in parallel since they only share `cat_breeds_api` as a common dependency.
 
-| Build Type | Time | Speedup |
-|------------|------|---------|
-| Sequential | ~67s | — |
-| Parallel | ~8s | **~8x faster** |
+| Build Type | Time |
+|------------|------|
+| Sequential | ~20s |
+| Parallel | ~18s |
+
+> **Note:** The time difference is modest for this small project (~10%), but the **Timeline view** in the build scans clearly shows tasks executing in parallel. These benefits compound significantly in larger codebases with more independent modules.
 
 <details>
 <summary><b>Build scan comparison</b></summary>
 
-- [Sequential build scan](https://gradle.com/s/lw5qwonj2dcgk) — Tasks execute one after another
-- [Parallel build scan](https://gradle.com/s/trx77sbcypurk) — Multiple workers process independent tasks
+- [Sequential build scan](https://gradle.com/s/xz24c7dso5px2) — Tasks execute one after another
+- [Parallel build scan](https://gradle.com/s/yi34ue2onzkks) — Multiple workers process independent tasks
+
+Commands used:
+```bash
+# Sequential
+./gradlew clean assembleDebug --no-parallel --no-build-cache --no-daemon --scan
+
+# Parallel
+./gradlew clean assembleDebug --parallel --no-build-cache --no-daemon --scan
+```
 
 <!-- TODO: Add screenshot showing timeline comparison -->
 <!-- ![Parallel vs Sequential](screenshots/build-parallel-comparison.png) -->
@@ -242,10 +253,14 @@ cat_breeds_api ← cat_breeds_data ← app
 <details>
 <summary><b>Build scan examples</b></summary>
 
-These scans were run with `--no-build-cache` to isolate compiler behavior from cache hits.
-
 - [API module change](https://gradle.com/s/azo7yrfbrdp4m) — Cascades to all dependents
 - [Data module change](https://gradle.com/s/ltfs2nzukcwrm) — Only affects data + app
+
+Commands used:
+```bash
+# After making an ABI change (e.g., adding a property) to a module:
+./gradlew assembleDebug --no-build-cache --scan
+```
 
 <!-- TODO: Add screenshots showing task execution differences -->
 <!-- ![API Change Cascade](screenshots/build-api-change.png) -->
